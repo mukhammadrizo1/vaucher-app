@@ -1,0 +1,157 @@
+@if (document) {
+<div class="modal-overlay" (click)="onClose()">
+  <div class="edit-modal" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>Редактировать документ</h2>
+      <button class="btn-close" (click)="onClose()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <form class="edit-form">
+        <div class="form-section">
+          <h3>Основная информация</h3>
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Номер договора</label>
+              <input type="text" [(ngModel)]="formData().contractNumber" name="contractNumber" />
+            </div>
+            <div class="form-group">
+              <label>Дата</label>
+              <input type="date" [(ngModel)]="formData().date" name="date" />
+            </div>
+            <div class="form-group">
+              <label>Номер контрагента</label>
+              <input type="text" [(ngModel)]="formData().contractorNumber" name="contractorNumber" />
+            </div>
+            <div class="form-group form-group-full">
+              <label>Наименование фирмы</label>
+              <input type="text" [(ngModel)]="formData().companyName" name="companyName" />
+            </div>
+            <div class="form-group">
+              <label>Должность</label>
+              <input type="text" [(ngModel)]="formData().position" name="position" />
+            </div>
+            <div class="form-group">
+              <label>Ф.И.О</label>
+              <input type="text" [(ngModel)]="formData().fullName" name="fullName" />
+            </div>
+            <div class="form-group form-group-full">
+              <label>Устав/доверенность</label>
+              <input type="text" [(ngModel)]="formData().documentBasis" name="documentBasis" />
+            </div>
+            <div class="form-group">
+              <label>Номер заказа</label>
+              <input type="text" [(ngModel)]="formData().orderNumber" name="orderNumber" />
+            </div>
+            <div class="form-group">
+              <label>Номер поставки</label>
+              <input type="text" [(ngModel)]="formData().deliveryNumber" name="deliveryNumber" />
+            </div>
+            <div class="form-group">
+              <label>Номер С/Ф</label>
+              <input type="text" [(ngModel)]="formData().invoiceNumber" name="invoiceNumber" />
+            </div>
+            <div class="form-group">
+              <label>Телефон</label>
+              <input type="text" [(ngModel)]="formData().phoneNumber" name="phoneNumber" />
+            </div>
+            <div class="form-group">
+              <label>Договор</label>
+              <input type="text" [(ngModel)]="formData().contract" name="contract" />
+            </div>
+            <div class="form-group form-group-full">
+              <label>Примечания</label>
+              <textarea [(ngModel)]="formData().notes" name="notes" rows="3" class="textarea-notes" [style.background-color]="formData().notesBgColor || '#ffffff'"></textarea>
+            </div>
+            <div class="form-group">
+              <label>Цвет фона строк таблицы</label>
+              <div class="color-picker-wrapper">
+                <input type="color" [(ngModel)]="formData().rowBgColor" name="rowBgColor" class="color-picker" />
+                <input type="text" [(ngModel)]="formData().rowBgColor" name="rowBgColorText" class="color-text-input" placeholder="#fafafa" />
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Цвет фона Примечания</label>
+              <div class="color-picker-wrapper">
+                <input type="color" [(ngModel)]="formData().notesBgColor" name="notesBgColor" class="color-picker" />
+                <input type="text" [(ngModel)]="formData().notesBgColor" name="notesBgColorText" class="color-text-input" placeholder="#ffffff" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <div class="section-header">
+            <h3>Таблица</h3>
+            <button type="button" class="btn-add-row" (click)="addTableRow()">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+              </svg>
+              Добавить строку
+            </button>
+          </div>
+          <div class="table-container">
+            <table class="edit-table">
+              <thead>
+                <tr>
+                  <th>№</th>
+                  <th>Номинал</th>
+                  <th>Количество</th>
+                  <th>Итого</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (row of formData().table; track row.id; let i = $index) {
+                <tr [style.background-color]="formData().rowBgColor || '#fafafa'">
+                  <td>{{ i + 1 }}</td>
+                  <td>
+                    <input type="number" [value]="row.sum" (input)="updateRowSum(row.id, $any($event.target).value)" />
+                  </td>
+                  <td>
+                    <input type="number" [value]="row.count" (input)="updateRowCount(row.id, $any($event.target).value)" />
+                  </td>
+                  <td>{{ row.sum * row.count }}</td>
+                  <td>
+                    @if (formData().table.length > 1) {
+                    <button type="button" class="btn-remove" (click)="removeTableRow(row.id)">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="3 6 5 6 21 6"></polyline>
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                      </svg>
+                    </button>
+                    }
+                  </td>
+                </tr>
+                }
+              </tbody>
+              <tfoot>
+                <tr>
+                  <td colspan="3"><strong>Итого:</strong></td>
+                  <td><strong>{{ formData().total }}</strong></td>
+                  <td></td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <h3>Реквизиты</h3>
+          <textarea [(ngModel)]="formData().requisites" name="requisites" rows="6" class="textarea-requisites"></textarea>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn-footer btn-cancel" (click)="onClose()">Отмена</button>
+      <button type="button" class="btn-footer btn-save" (click)="onSave()">Сохранить</button>
+    </div>
+  </div>
+</div>
+}
+

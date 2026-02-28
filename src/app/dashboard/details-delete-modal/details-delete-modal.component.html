@@ -1,0 +1,56 @@
+@if (document) {
+<div class="modal-overlay" (click)="onClose()">
+  <div class="delete-modal" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>Удалить документ</h2>
+      <button class="btn-close" (click)="onClose()">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="warning-icon">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="64"
+          height="64"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M21 4H8l-7 8 7 8h13a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"></path>
+          <line x1="18" y1="9" x2="12" y2="15"></line>
+          <line x1="12" y1="9" x2="18" y2="15"></line>
+        </svg>
+      </div>
+      <p class="warning-text">
+        Вы уверены, что хотите удалить документ №<strong>{{ document.contractNumber }}</strong> от
+        <strong>{{ document.date }}</strong
+        >?
+      </p>
+      <p class="warning-subtext">
+        Это действие нельзя отменить. Документ будет удален из таблицы и файла данных.
+      </p>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn-footer btn-cancel" (click)="onClose()">Отмена</button>
+      <button type="button" class="btn-footer btn-confirm" (click)="onConfirm()">Удалить</button>
+    </div>
+  </div>
+</div>
+}

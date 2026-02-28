@@ -1,0 +1,2948 @@
+<!-- Success Toast -->
+@if (showSuccessMessage()) {
+<div class="toast-container">
+  <div class="toast toast-success">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="20"
+      height="20"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    >
+      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+      <polyline points="22 4 12 14.01 9 11.01"></polyline>
+    </svg>
+    <span>Данные успешно сохранены!</span>
+  </div>
+</div>
+}
+
+<!-- Send Success Toast -->
+@if (showSendSuccessMessage()) {
+<div class="toast-container">
+  <div class="toast toast-success">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="20"
+      height="20"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    >
+      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+      <polyline points="22 4 12 14.01 9 11.01"></polyline>
+    </svg>
+    <span>Details successfully sent</span>
+  </div>
+</div>
+}
+
+<!-- Send Error Toast -->
+@if (showSendErrorMessage()) {
+<div class="toast-container">
+  <div class="toast toast-error">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="20"
+      height="20"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    >
+      <circle cx="12" cy="12" r="10"></circle>
+      <line x1="12" y1="8" x2="12" y2="12"></line>
+      <line x1="12" y1="16" x2="12.01" y2="16"></line>
+    </svg>
+    <span>Try again some errors have</span>
+  </div>
+</div>
+}
+
+<!-- Toolbar -->
+<div class="toolbar-container">
+  <div class="toolbar">
+    <div class="toolbar-title">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+        <polyline points="14 2 14 8 20 8"></polyline>
+        <line x1="16" y1="13" x2="8" y2="13"></line>
+        <line x1="16" y1="17" x2="8" y2="17"></line>
+      </svg>
+      <span>Редактор документов</span>
+    </div>
+    <div class="toolbar-buttons">
+      <button
+        class="btn btn-values"
+        (click)="openModal()"
+        [disabled]="isGenerating() || isEditing()"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M12 20h9"></path>
+          <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+        </svg>
+        Редактировать данные
+      </button>
+      <button
+        class="btn btn-pdf"
+        (click)="downloadPdf()"
+        [disabled]="isGenerating() || isEditing()"
+      >
+        @if (isGenerating()) {
+        <span class="spinner"></span>
+        } @else {
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+          <polyline points="7 10 12 15 17 10"></polyline>
+          <line x1="12" y1="15" x2="12" y2="3"></line>
+        </svg>
+        } Скачать PDF
+      </button>
+      <button
+        class="btn btn-docx"
+        (click)="sendDetails()"
+        [disabled]="isGenerating() || isEditing()"
+      >
+        @if (isGenerating()) {
+        <span class="spinner"></span>
+        } @else {
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path
+            d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"
+          ></path>
+          <polyline points="22,6 12,13 2,6"></polyline>
+        </svg>
+        } Отправить детали
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+@if (isModalOpen()) {
+<div class="modal-overlay">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 class="modal-title">Редактировать данные</h2>
+      <div class="modal-header-actions">
+        <button class="modal-icon-btn" (click)="resetForm()" title="Сбросить">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+            <path d="M3 3v5h5"></path>
+          </svg>
+        </button>
+        <button class="modal-icon-btn modal-close-btn" (click)="closeModal()" title="Закрыть">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <!-- Contract Number -->
+        <div class="form-group">
+          <label class="form-label">Номер договора</label>
+          <input
+            type="text"
+            class="form-input"
+            [value]="formContractNumber()"
+            (input)="formContractNumber.set($any($event.target).value)"
+          />
+        </div>
+
+        <!-- Date -->
+        <div class="form-group">
+          <label class="form-label">Дата (день, месяц, год)</label>
+          <input
+            type="date"
+            class="form-input"
+            [value]="formContractDate()"
+            (input)="formContractDate.set($any($event.target).value)"
+          />
+        </div>
+
+        <!-- Company Name -->
+        <div class="form-group form-group-full">
+          <label class="form-label">Наименование фирмы</label>
+          <input
+            type="text"
+            class="form-input"
+            [value]="formCompanyName()"
+            (input)="formCompanyName.set($any($event.target).value)"
+          />
+        </div>
+
+        <!-- Position -->
+        <div class="form-group">
+          <label class="form-label">Должность</label>
+          <input
+            type="text"
+            class="form-input"
+            [value]="formPosition()"
+            (input)="formPosition.set($any($event.target).value)"
+          />
+        </div>
+
+        <!-- Full Name -->
+        <div class="form-group">
+          <label class="form-label">Ф.И.О</label>
+          <input
+            type="text"
+            class="form-input"
+            [value]="formFullName()"
+            (input)="formFullName.set($any($event.target).value)"
+          />
+        </div>
+
+        <!-- Document Basis -->
+        <div class="form-group form-group-full">
+          <label class="form-label">Устав/доверенность</label>
+          <input
+            type="text"
+            class="form-input"
+            [value]="formDocumentBasis()"
+            (input)="formDocumentBasis.set($any($event.target).value)"
+          />
+        </div>
+      </div>
+
+      <!-- Table Section -->
+      <div class="form-section">
+        <div class="form-section-header">
+          <h3 class="form-section-title">Подарочные карты</h3>
+          <button type="button" class="btn-add-row" (click)="addTableRow()">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            Добавить
+          </button>
+        </div>
+
+        <div class="table-container">
+          <table class="form-table">
+            <thead>
+              <tr>
+                <th>№</th>
+                <th>Номинал (сум)</th>
+                <th>Количество</th>
+                <th>Цена</th>
+                <th>Стоимость поставки</th>
+                <th>НДС (12%)</th>
+                <th>Итого с НДС</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (row of formTableRows(); track row.id; let i = $index) {
+              <tr>
+                <td class="cell-center" data-label="№">{{ i + 1 }}</td>
+                <td data-label="Номинал">
+                  <input
+                    type="number"
+                    class="form-input table-input"
+                    [value]="row.sum"
+                    (input)="updateRowSum(row.id, $any($event.target).value)"
+                  />
+                </td>
+                <td data-label="Количество">
+                  <input
+                    type="number"
+                    class="form-input table-input"
+                    [value]="row.count"
+                    (input)="updateRowCount(row.id, $any($event.target).value)"
+                  />
+                </td>
+                <td class="cell-right" data-label="Цена">{{ formatMoney(getRowPrice(row)) }}</td>
+                <td class="cell-right" data-label="Стоимость">
+                  {{ formatMoney(getRowDeliveryCost(row)) }}
+                </td>
+                <td class="cell-right" data-label="НДС (12%)">
+                  {{ formatMoney(getRowVatAmount(row)) }}
+                </td>
+                <td class="cell-right cell-bold" data-label="Итого с НДС">
+                  {{ formatNumber(getRowTotalWithVat(row)) }}
+                </td>
+                <td class="cell-center" data-label="">
+                  <button
+                    type="button"
+                    class="btn-delete-row"
+                    (click)="removeTableRow(row.id)"
+                    [disabled]="formTableRows().length <= 1"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <polyline points="3 6 5 6 21 6"></polyline>
+                      <path
+                        d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"
+                      ></path>
+                    </svg>
+                  </button>
+                </td>
+              </tr>
+              }
+            </tbody>
+            <tfoot>
+              <tr class="totals-row">
+                <td colspan="4" class="cell-right" data-label=""><strong>Итого:</strong></td>
+                <td class="cell-right" data-label="Стоимость">
+                  <strong>{{ formatMoney(formTotalDeliveryCost()) }}</strong>
+                </td>
+                <td class="cell-right" data-label="НДС">
+                  <strong>{{ formatMoney(formTotalVatAmount()) }}</strong>
+                </td>
+                <td class="cell-right cell-bold" data-label="Итого с НДС">
+                  <strong>{{ formatNumber(formTotalWithVat()) }}</strong>
+                </td>
+                <td data-label=""></td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+
+        <div class="total-words">
+          <strong>Итого:</strong> {{ formTotalWithVatFormatted() }} ({{
+            formTotalWithVatInWords()
+          }}) сум с учетом НДС.
+        </div>
+      </div>
+
+      <!-- Requisites -->
+      <div class="form-group form-group-full">
+        <label class="form-label">Реквизиты</label>
+        <textarea
+          class="form-textarea"
+          rows="5"
+          [value]="formRequisites()"
+          (input)="formRequisites.set($any($event.target).value)"
+        ></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-cancel" (click)="closeModal()">Отмена</button>
+      <button class="btn btn-save" (click)="saveForm()">Сохранить</button>
+    </div>
+  </div>
+</div>
+}
+
+<!-- Confirmation Modal -->
+@if (isConfirmModalOpen()) {
+<div class="modal-overlay">
+  <div class="modal modal-confirm">
+    <div class="modal-header">
+      <h2 class="modal-title">Подтверждение отправки</h2>
+      <div class="modal-header-actions">
+        <button class="modal-icon-btn" (click)="openEditModalFromConfirm()" title="Редактировать">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+          </svg>
+        </button>
+        <button
+          class="modal-icon-btn modal-close-btn"
+          (click)="closeConfirmModal()"
+          title="Закрыть"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+    </div>
+    <div class="modal-body">
+      <div style="font-size: 0.95rem; line-height: 1.8">
+        <div style="margin-bottom: 12px">
+          <strong>Номер договора:</strong> {{ savedContractNumber() }}
+        </div>
+        <div style="margin-bottom: 12px"><strong>Дата:</strong> {{ savedContractDate() }}</div>
+        <div style="margin-bottom: 12px">
+          <strong>Наименование фирмы:</strong> {{ savedCompanyName() }}
+        </div>
+        <div style="margin-bottom: 12px"><strong>Должность:</strong> {{ savedPosition() }}</div>
+        <div style="margin-bottom: 12px"><strong>Ф.И.О:</strong> {{ savedFullName() }}</div>
+        <div style="margin-bottom: 12px">
+          <strong>Устав/доверенность:</strong> {{ savedDocumentBasis() }}
+        </div>
+        <div style="margin-bottom: 12px">
+          <strong>Таблица:</strong>
+          <table style="width: 100%; margin-top: 8px; border-collapse: collapse; font-size: 0.9rem">
+            <thead>
+              <tr style="background-color: #f5f5f5">
+                <th style="padding: 8px; text-align: left; border: 1px solid #ddd">№</th>
+                <th style="padding: 8px; text-align: right; border: 1px solid #ddd">Номинал</th>
+                <th style="padding: 8px; text-align: right; border: 1px solid #ddd">Количество</th>
+                <th style="padding: 8px; text-align: right; border: 1px solid #ddd">Итого</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (row of savedTableRows(); track row.id; let i = $index) {
+              <tr>
+                <td style="padding: 8px; border: 1px solid #ddd">{{ i + 1 }}</td>
+                <td style="padding: 8px; text-align: right; border: 1px solid #ddd">
+                  {{ formatNumber(row.sum) }}
+                </td>
+                <td style="padding: 8px; text-align: right; border: 1px solid #ddd">
+                  {{ row.count }}
+                </td>
+                <td style="padding: 8px; text-align: right; border: 1px solid #ddd">
+                  {{ formatNumber(getRowTotalWithVat(row)) }}
+                </td>
+              </tr>
+              }
+            </tbody>
+            <tfoot>
+              <tr style="background-color: #f9f9f9; font-weight: bold">
+                <td colspan="3" style="padding: 8px; text-align: right; border: 1px solid #ddd">
+                  Итого:
+                </td>
+                <td style="padding: 8px; text-align: right; border: 1px solid #ddd">
+                  {{ savedTotalWithVatFormatted() }}
+                </td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+        <div style="margin-bottom: 12px">
+          <strong>Реквизиты:</strong>
+          <div style="margin-top: 4px; white-space: pre-line">{{ savedRequisites() }}</div>
+        </div>
+        <div style="margin-top: 16px; padding: 12px; background-color: #f0f7ff; border-radius: 4px">
+          <p style="margin: 0; font-size: 0.9rem; color: #0066cc">
+            Вы уверены, что хотите отправить детали документа?<br />
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-cancel" (click)="closeConfirmModal()">Отмена</button>
+      <button class="btn btn-save" (click)="confirmSendDetails()" [disabled]="isGenerating()">
+        @if (isGenerating()) {
+        <span class="spinner"></span>
+        } @else { Отправить }
+      </button>
+    </div>
+  </div>
+</div>
+}
+
+<!-- Document Container -->
+<div class="document-wrapper">
+  <div class="document-scaler">
+    <div #documentContainer class="WordSection1" [class.editable]="isEditing()">
+      <p class="MsoPlainText" align="center" style="text-align: center; line-height: 12pt">
+        <b
+          ><span lang="RU" style="font-size: 10pt; font-family: 'Times New Roman', serif"
+            >ДОГОВОР КУПЛИ-ПРОДАЖИ ПОДАРОЧНЫХ КАРТ №</span
+          ></b
+        ><span lang="RU"> </span
+        ><b
+          ><span
+            lang="RU"
+            style="font-size: 10pt; font-family: 'Times New Roman', serif; background: transparent"
+            >{{ savedContractNumber() }}</span
+          ></b
+        ><span lang="RU"> </span
+        ><b
+          ><span lang="RU" style="font-size: 10pt; font-family: 'Times New Roman', serif">
+          </span></b
+        ><span lang="RU"> </span
+        ><b
+          ><span lang="RU" style="font-size: 10pt; font-family: 'Times New Roman', serif">
+          </span></b
+        ><span lang="RU" style="font-size: 10pt; font-family: 'Times New Roman', serif">
+          <b> </b> <b> </b> <b> </b
+        ></span>
+      </p>
+
+      <p class="MsoPlainText" style="text-align: justify; line-height: 12pt">
+        <b
+          ><span lang="RU" style="font-size: 10pt; font-family: 'Times New Roman', serif"
+            >&nbsp;</span
+          ></b
+        >
+      </p>
+
+      <table
+        width="100%"
+        border="0"
+        cellpadding="0"
+        cellspacing="0"
+        style="border-collapse: collapse"
+      >
+        <tr>
+          <td style="text-align: left">
+            <span lang="RU" style="font-size: 10pt; font-family: 'Times New Roman', serif"
+              >г. Ташкент</span
+            >
+          </td>
+          <td style="text-align: right">
+            <span lang="RU" style="font-size: 10pt; font-family: 'Times New Roman', serif"
+              >«<span style="background: transparent">{{ formattedDate().day }}</span
+              >» <span style="background: transparent">{{ formattedDate().month }}</span>
+              {{ formattedDate().year }} г.</span
+            >
+          </td>
+        </tr>
+      </table>
+
+      <p class="MsoPlainText" style="text-align: justify; line-height: 12pt">
+        <span lang="RU" style="font-size: 10pt; font-family: 'Times New Roman', serif">&nbsp;</span>
+      </p>
+
+      <p class="MsoPlainText" style="text-align: justify; line-height: 12pt">
+        <b
+          ><span lang="RU" style="font-family: 'Times New Roman', serif; background: transparent"
+            >{{ savedCompanyName() }},</span
+          ></b
+        ><b><span lang="RU" style="font-family: 'Times New Roman', serif"> </span></b
+        ><span lang="RU" style="font-family: 'Times New Roman', serif">
+          именуемый в дальнейшем Покупатель, в лице
+          <span style="background: transparent"
+            >{{ savedPosition() }} <b>{{ savedFullName() }}</b></span
+          ><b>,</b> действующего на основании
+          <span style="background: transparent">{{ savedDocumentBasis() }}</span
+          >, с одной стороны, и <b>ИП ООО ANGLESEY FOOD</b>, именуемый в дальнейшем «Продавец», в
+          лице Руководителя отдела Korzinka-Biznes Шакирходжаев Ф., действующего на основании
+          доверенности №045B от 04.11.2025г., с другой стороны, совместно именуемые Стороны, а
+          по-отдельности «Сторона», заключили настоящий договор (далее – «Договор») о
+          нижеследующем:</span
+        >
+      </p>
+
+      <p class="MsoPlainText" style="text-align: justify; line-height: 12pt">
+        <span lang="RU" style="font-family: 'Times New Roman', serif">&nbsp;</span>
+      </p>
+
+      <p class="MsoPlainText" align="center" style="text-align: center; line-height: 12pt">
+        <b
+          ><span lang="RU" style="font-size: 10pt; font-family: 'Times New Roman', serif"
+            >1. Понятия, используемые в настоящем договоре:</span
+          ></b
+        >
+      </p>
+
+      <p
+        class="MsoPlainText"
+        style="margin-left: 63.8pt; text-align: justify; text-indent: -63.8pt; line-height: 12pt"
+      >
+        <i><span lang="RU" style="font-family: 'Times New Roman', serif">&nbsp;</span></i>
+      </p>
+
+      <p
+        class="MsoPlainText"
+        style="margin-left: 63.8pt; text-align: justify; text-indent: -63.8pt; line-height: 12pt"
+      >
+        <i
+          ><span lang="RU" style="font-family: 'Times New Roman', serif"
+            >А. Подарочная карта от Сети супермаркетов Корзинка (далее – «Подарочная карта»)
+          </span></i
+        ><span lang="RU" style="font-family: 'Times New Roman', serif"
+          >– это документ, удостоверяющий право его предъявителя приобрести у Продавца товары на
+          сумму, равную номинальной стоимости подарочной карты.
+        </span>
+      </p>
+
+      <p
+        class="MsoPlainText"
+        style="margin-left: 63.8pt; text-align: justify; text-indent: -63.8pt; line-height: 12pt"
+      >
+        <i><span style="font-family: 'Times New Roman', serif">B</span></i
+        ><i><span lang="RU" style="font-family: 'Times New Roman', serif">. Товары -</span></i
+        ><span lang="RU" style="font-family: 'Times New Roman', serif">
+          товары народного потребления, реализуемые Продавцом в сети супермаркетов Корзинка.</span
+        >
+      </p>
+
+      <p
+        class="MsoPlainText"
+        style="margin-left: 63.8pt; text-align: justify; text-indent: -63.8pt; line-height: 12pt"
+      >
+        <i><span style="font-family: 'Times New Roman', serif">C</span></i
+        ><i
+          ><span lang="RU" style="font-family: 'Times New Roman', serif"
+            >. Номинальная стоимость (номинал) подарочной карты
+          </span></i
+        ><span lang="RU" style="font-family: 'Times New Roman', serif"
+          >– сумма, указанная на Подарочной карте, на которую предъявитель вправе приобрести товар.
+        </span>
+      </p>
+
+      <p
+        class="MsoPlainText"
+        style="margin-left: 63.8pt; text-align: justify; text-indent: -63.8pt; line-height: 12pt"
+      >
+        <i><span style="font-family: 'Times New Roman', serif">D</span></i
+        ><i
+          ><span lang="RU" style="font-family: 'Times New Roman', serif"
+            >. Место приобретения Товара –
+          </span></i
+        ><span lang="RU" style="font-family: 'Times New Roman', serif"
+          >сеть супермаркетов Корзинка, расположенных на территории Республики Узбекистан, за
+          исключением супермаркетов, расположенных по адресам: Республика Каракалпакстан, город
+          Нукус, улица Ерназар Алакуз, дом 162 и Кашкадарьинская обла., г. Шахрисабз, улица
+          Мафтункор, дом 35.</span
+        >
+      </p>
+
+      <p
+        class="MsoPlainText"
+        style="margin-left: 63.8pt; text-align: justify; text-indent: -63.8pt; line-height: 12pt"
+      >
+        <i><span style="font-family: 'Times New Roman', serif">E</span></i
+        ><i
+          ><span lang="RU" style="font-family: 'Times New Roman', serif">. Предъявитель – </span></i
+        ><span lang="RU" style="font-family: 'Times New Roman', serif"
+          >физическое лицо, правомерно владеющее и распоряжающееся Подарочной картой в результате
+          получения такой Подарочной карты от Покупателя, обладающее правом приобретения Товара в
+          розницу для личного, семейного и иного использования, не связанного с предпринимательской
+          деятельностью, в Месте приобретения Товара в обмен на списанные Продавцом средства с
+          предъявленной Подарочной карты на сумму, установленную и не превышающую Номинала
+          Подарочной карты.
+        </span>
+      </p>
+
+      <p
+        class="MsoPlainText"
+        style="margin-left: 63.8pt; text-align: justify; text-indent: -63.8pt; line-height: 12pt"
+      >
+        <i><span style="font-family: 'Times New Roman', serif">F</span></i
+        ><i
+          ><span lang="RU" style="font-family: 'Times New Roman', serif"
+            >. Срок предъявления Подарочной карты –</span
+          ></i
+        ><span lang="RU" style="font-family: 'Times New Roman', serif">
+          период времени, установленный до 31.12.2026 года включительно, в течение которого
+          Предъявитель имеет право на получение товара на сумму, эквивалентную сумме средств,
+          указанных и имеющихся в Подарочной карте.</span
+        >
+      </p>
+
+      <p class="MsoPlainText" style="text-align: justify; line-height: 12pt">
+        <span lang="RU" style="font-family: 'Times New Roman', serif">&nbsp;</span>
+      </p>
+
+      <p class="MsoPlainText" align="center" style="text-align: center; line-height: 12pt">
+        <b
+          ><span lang="RU" style="font-size: 10pt; font-family: 'Times New Roman', serif"
+            >2. Предмет договора.</span
+          ></b
+        >
+      </p>
+
+      <p class="MsoPlainText" style="text-align: justify; line-height: 12pt">
+        <span lang="RU" style="font-family: 'Times New Roman', serif"
+          >2.1. В соответствии с настоящим Договором Продавец обязуется передать Покупателю
+          Подарочные карты, подтверждающие право Предъявителя на приобретение Товара в Месте
+          приобретения Товара, а Покупатель обязуется принять и произвести оплату их стоимости в
+          соответствии с условиями настоящего Договора.</span
+        >
+      </p>
+
+      <p class="MsoPlainText" style="text-align: justify; line-height: 12pt">
+        <span lang="RU" style="font-family: 'Times New Roman', serif"
+          >2.2. Продавец передает Покупателю следующие Подарочные карты:</span
+        >
+      </p>
+
+      <table
+        class="MsoNormalTable"
+        border="0"
+        cellspacing="0"
+        cellpadding="0"
+        width="737"
+        style="margin-left: -35.7pt; border-collapse: collapse"
+      >
+        <tbody>
+          <tr style="page-break-inside: avoid">
+            <td
+              width="161"
+              rowspan="2"
+              style="width: 120.5pt; border: solid windowtext 1pt; padding: 0 3pt"
+            >
+              <p
+                class="MsoNormal"
+                align="center"
+                style="
+                  text-align: center;
+                  text-autospace: ideograph-numeric ideograph-other;
+                  margin: 0;
+                  line-height: 1.1;
+                "
+              >
+                <b
+                  ><span lang="RU" style="font-size: 8pt; color: black"
+                    >Наименование Продукции</span
+                  ></b
+                >
+              </p>
+            </td>
+            <td
+              width="113"
+              rowspan="2"
+              style="
+                width: 85.05pt;
+                border: solid windowtext 1pt;
+                border-left: none;
+                padding: 0 3pt;
+              "
+            >
+              <p
+                class="MsoNormal"
+                align="center"
+                style="
+                  text-align: center;
+                  text-autospace: ideograph-numeric ideograph-other;
+                  margin: 0;
+                  line-height: 1.1;
+                "
+              >
+                <b
+                  ><span lang="RU" style="font-size: 8pt; color: black"
+                    >Идентификацион<br />ный код и<br />название по<br />Единому<br />электронному<br />национальному<br />каталогу
+                    товаров<br />(услуг)</span
+                  ></b
+                >
+              </p>
+            </td>
+            <td
+              width="38"
+              rowspan="2"
+              style="
+                width: 28.35pt;
+                border: solid windowtext 1pt;
+                border-left: none;
+                padding: 0 3pt;
+              "
+            >
+              <p
+                class="MsoNormal"
+                align="center"
+                style="
+                  text-align: center;
+                  text-autospace: ideograph-numeric ideograph-other;
+                  margin: 0;
+                  line-height: 1.1;
+                "
+              >
+                <b><span lang="RU" style="font-size: 8pt; color: black">Ед. изм</span></b>
+              </p>
+            </td>
+            <td
+              width="47"
+              rowspan="2"
+              style="
+                width: 35.45pt;
+                border: solid windowtext 1pt;
+                border-left: none;
+                padding: 0 3pt;
+              "
+            >
+              <p
+                class="MsoNormal"
+                align="center"
+                style="
+                  text-align: center;
+                  text-autospace: ideograph-numeric ideograph-other;
+                  margin: 0;
+                  line-height: 1.1;
+                "
+              >
+                <b><span lang="RU" style="font-size: 8pt; color: black">Кол-во</span></b>
+              </p>
+            </td>
+            <td
+              width="76"
+              rowspan="2"
+              style="width: 56.7pt; border: solid windowtext 1pt; border-left: none; padding: 0 3pt"
+            >
+              <p
+                class="MsoNormal"
+                align="center"
+                style="
+                  text-align: center;
+                  text-autospace: ideograph-numeric ideograph-other;
+                  margin: 0;
+                  line-height: 1.1;
+                "
+              >
+                <b><span lang="RU" style="font-size: 8pt; color: black">Цена</span></b>
+              </p>
+            </td>
+            <td
+              width="95"
+              rowspan="2"
+              style="width: 70.9pt; border: solid windowtext 1pt; border-left: none; padding: 0 3pt"
+            >
+              <p
+                class="MsoNormal"
+                align="center"
+                style="
+                  text-align: center;
+                  text-autospace: ideograph-numeric ideograph-other;
+                  margin: 0;
+                  line-height: 1.1;
+                "
+              >
+                <b
+                  ><span lang="RU" style="font-size: 8pt; color: black"
+                    >Стоимость<br />поставки</span
+                  ></b
+                >
+              </p>
+            </td>
+            <td
+              width="113"
+              colspan="2"
+              style="
+                width: 85.05pt;
+                border: solid windowtext 1pt;
+                border-left: none;
+                padding: 0 3pt;
+              "
+            >
+              <p
+                class="MsoNormal"
+                align="center"
+                style="
+                  text-align: center;
+                  text-autospace: ideograph-numeric ideograph-other;
+                  margin: 0;
+                  line-height: 1.1;
+                "
+              >
+                <b><span lang="RU" style="font-size: 8pt; color: black">НДС</span></b>
+              </p>
+            </td>
+            <td
+              width="94"
+              rowspan="2"
+              style="
+                width: 70.85pt;
+                border: solid windowtext 1pt;
+                border-left: none;
+                padding: 0 3pt;
+              "
+            >
+              <p
+                class="MsoNormal"
+                align="center"
+                style="
+                  text-align: center;
+                  text-autospace: ideograph-numeric ideograph-other;
+                  margin: 0;
+                  line-height: 1.1;
+                "
+              >
+                <b
+                  ><span lang="RU" style="font-size: 8pt; color: black"
+                    >Стоимость<br />поставки с<br />учётом НДС</span
+                  ></b
+                >
+              </p>
+            </td>
+          </tr>
+          <tr>
+            <td
+              width="28"
+              style="
+                width: 21.25pt;
+                border-top: none;
+                border-left: none;
+                border-bottom: solid windowtext 1pt;
+                border-right: solid windowtext 1pt;
+                padding: 0 3pt;
+              "
+            >
+              <p
+                class="MsoNormal"
+                align="center"
+                style="
+                  text-align: center;
+                  text-autospace: ideograph-numeric ideograph-other;
+                  margin: 0;
+                  line-height: 1.1;
+                "
+              >
+                <b
+                  ><span lang="RU" style="font-size: 8pt; color: black"
+                    >С<br />та<br />вк<br />а<br />%</span
+                  ></b
+                >
+              </p>
+            </td>
+            <td
+              width="85"
+              style="
+                width: 63.8pt;
+                border-top: none;
+                border-left: none;
+                border-bottom: solid windowtext 1pt;
+                border-right: solid windowtext 1pt;
+                padding: 0 3pt;
+              "
+            >
+              <p
+                class="MsoNormal"
+                align="center"
+                style="
+                  text-align: center;
+                  text-autospace: ideograph-numeric ideograph-other;
+                  margin: 0;
+                  line-height: 1.1;
+                "
+              >
+                <b><span lang="RU" style="font-size: 8pt; color: black">Сумма</span></b>
+              </p>
+            </td>
+          </tr>
+          @for (row of savedTableRows(); track row.id) {
+          <tr style="page-break-inside: avoid">
+            <td
+              width="161"
+              style="width: 120.5pt; border: solid windowtext 1pt; border-top: none; padding: 0 3pt"
+            >
+              <p
+                class="MsoNormal"
+                align="center"
+                style="
+                  text-align: center;
+                  text-autospace: ideograph-numeric ideograph-other;
+                  margin: 0;
+                  line-height: 1.1;
+                "
+              >
+                <span lang="UZ-CYR" style="font-size: 8pt; color: black"
+                  >Подарочная карта korzinka.uz на предъявителя номиналом
+                  {{ formatNumber(row.sum) }} сум</span
+                >
+              </p>
+            </td>
+            <td
+              width="113"
+              style="
+                width: 85.05pt;
+                border-top: none;
+                border-left: none;
+                border-bottom: solid windowtext 1pt;
+                border-right: solid windowtext 1pt;
+                padding: 0 3pt;
+              "
+            >
+              <p
+                class="MsoNormal"
+                align="center"
+                style="
+                  text-align: center;
+                  text-autospace: ideograph-numeric ideograph-other;
+                  margin: 0;
+                  line-height: 1.1;
+                "
+              >
+                <span lang="RU" style="font-size: 8pt; color: black"
+                  >09800001005000000 - Подарочная карта, ваучер</span
+                >
+              </p>
+            </td>
+            <td
+              width="38"
+              style="
+                width: 28.35pt;
+                border-top: none;
+                border-left: none;
+                border-bottom: solid windowtext 1pt;
+                border-right: solid windowtext 1pt;
+                padding: 0 3pt;
+              "
+            >
+              <p
+                class="MsoNormal"
+                align="center"
+                style="
+                  text-align: center;
+                  text-autospace: ideograph-numeric ideograph-other;
+                  margin: 0;
+                  line-height: 1.1;
+                "
+              >
+                <span lang="RU" style="font-size: 8pt; color: black">шт.</span>
+              </p>
+            </td>
+            <td
+              width="47"
+              style="
+                width: 35.45pt;
+                border-top: none;
+                border-left: none;
+                border-bottom: solid windowtext 1pt;
+                border-right: solid windowtext 1pt;
+                padding: 0 3pt;
+              "
+            >
+              <p
+                class="MsoNormal"
+                align="center"
+                style="
+                  text-align: center;
+                  text-autospace: ideograph-numeric ideograph-other;
+                  margin: 0;
+                  line-height: 1.1;
+                "
+              >
+                <span lang="RU" style="font-size: 8pt; color: black">{{ row.count }}</span>
+              </p>
+            </td>
+            <td
+              width="76"
+              style="
+                width: 56.7pt;
+                border-top: none;
+                border-left: none;
+                border-bottom: solid windowtext 1pt;
+                border-right: solid windowtext 1pt;
+                padding: 0 3pt;
+              "
+            >
+              <p
+                class="MsoNormal"
+                align="center"
+                style="
+                  text-align: center;
+                  text-autospace: ideograph-numeric ideograph-other;
+                  margin: 0;
+                  line-height: 1.1;
+                "
+              >
+                <span lang="RU" style="font-size: 8pt; color: black; white-space: nowrap">{{
+                  formatMoney(getRowPrice(row))
+                }}</span>
+              </p>
+            </td>
+            <td
+              width="95"
+              style="
+                width: 70.9pt;
+                border-top: none;
+                border-left: none;
+                border-bottom: solid windowtext 1pt;
+                border-right: solid windowtext 1pt;
+                padding: 0 3pt;
+              "
+            >
+              <p
+                class="MsoNormal"
+                align="center"
+                style="
+                  text-align: center;
+                  text-autospace: ideograph-numeric ideograph-other;
+                  margin: 0;
+                  line-height: 1.1;
+                "
+              >
+                <span lang="RU" style="font-size: 8pt; color: black; white-space: nowrap">{{
+                  formatMoney(getRowDeliveryCost(row))
+                }}</span>
+              </p>
+            </td>
+            <td
+              width="28"
+              style="
+                width: 21.25pt;
+                border-top: none;
+                border-left: none;
+                border-bottom: solid windowtext 1pt;
+                border-right: solid windowtext 1pt;
+                padding: 0 3pt;
+              "
+            >
+              <p
+                class="MsoNormal"
+                align="center"
+                style="
+                  text-align: center;
+                  text-autospace: ideograph-numeric ideograph-other;
+                  margin: 0;
+                  line-height: 1.1;
+                "
+              >
+                <span lang="RU" style="font-size: 8pt; color: black">12</span>
+              </p>
+            </td>
+            <td
+              width="85"
+              style="
+                width: 63.8pt;
+                border-top: none;
+                border-left: none;
+                border-bottom: solid windowtext 1pt;
+                border-right: solid windowtext 1pt;
+                padding: 0 3pt;
+              "
+            >
+              <p
+                class="MsoNormal"
+                align="center"
+                style="
+                  text-align: center;
+                  text-autospace: ideograph-numeric ideograph-other;
+                  margin: 0;
+                  line-height: 1.1;
+                "
+              >
+                <span lang="RU" style="font-size: 8pt; color: black; white-space: nowrap">{{
+                  formatMoney(getRowVatAmount(row))
+                }}</span>
+              </p>
+            </td>
+            <td
+              width="94"
+              style="
+                width: 70.85pt;
+                border-top: none;
+                border-left: none;
+                border-bottom: solid windowtext 1pt;
+                border-right: solid windowtext 1pt;
+                padding: 0 3pt;
+              "
+            >
+              <p
+                class="MsoNormal"
+                align="center"
+                style="
+                  text-align: center;
+                  text-autospace: ideograph-numeric ideograph-other;
+                  margin: 0;
+                  line-height: 1.1;
+                "
+              >
+                <span lang="UZ-CYR" style="font-size: 8pt; color: black; white-space: nowrap">{{
+                  formatNumber(getRowTotalWithVat(row))
+                }}</span>
+              </p>
+            </td>
+          </tr>
+          }
+          <tr style="page-break-inside: avoid">
+            <td
+              width="435"
+              colspan="5"
+              style="
+                width: 326.05pt;
+                border: solid windowtext 1pt;
+                border-top: none;
+                padding: 0 3pt;
+              "
+            >
+              <p
+                class="MsoNormal"
+                align="right"
+                style="
+                  text-align: right;
+                  text-autospace: ideograph-numeric ideograph-other;
+                  margin: 0;
+                  line-height: 1.1;
+                "
+              >
+                <b><span lang="RU" style="font-size: 8pt; color: black">Итого:</span></b>
+              </p>
+            </td>
+            <td
+              width="95"
+              style="
+                width: 70.9pt;
+                border-top: none;
+                border-left: none;
+                border-bottom: solid windowtext 1pt;
+                border-right: solid windowtext 1pt;
+                padding: 0 3pt;
+              "
+            >
+              <p
+                class="MsoNormal"
+                align="center"
+                style="
+                  text-align: center;
+                  text-autospace: ideograph-numeric ideograph-other;
+                  margin: 0;
+                  line-height: 1.1;
+                "
+              >
+                <span lang="RU" style="font-size: 8pt; color: black; white-space: nowrap">{{
+                  formatMoney(savedTotalDeliveryCost())
+                }}</span>
+              </p>
+            </td>
+            <td
+              width="28"
+              style="
+                width: 21.25pt;
+                border-top: none;
+                border-left: none;
+                border-bottom: solid windowtext 1pt;
+                border-right: solid windowtext 1pt;
+                padding: 0 3pt;
+              "
+            >
+              <p
+                class="MsoNormal"
+                align="center"
+                style="
+                  text-align: center;
+                  text-autospace: ideograph-numeric ideograph-other;
+                  margin: 0;
+                  line-height: 1.1;
+                "
+              >
+                <span lang="RU" style="font-size: 8pt; color: black">12</span>
+              </p>
+            </td>
+            <td
+              width="85"
+              style="
+                width: 63.8pt;
+                border-top: none;
+                border-left: none;
+                border-bottom: solid windowtext 1pt;
+                border-right: solid windowtext 1pt;
+                padding: 0 3pt;
+              "
+            >
+              <p
+                class="MsoNormal"
+                align="center"
+                style="
+                  text-align: center;
+                  text-autospace: ideograph-numeric ideograph-other;
+                  margin: 0;
+                  line-height: 1.1;
+                "
+              >
+                <span lang="RU" style="font-size: 8pt; color: black; white-space: nowrap">{{
+                  formatMoney(savedTotalVatAmount())
+                }}</span>
+              </p>
+            </td>
+            <td
+              width="94"
+              style="
+                width: 70.85pt;
+                border-top: none;
+                border-left: none;
+                border-bottom: solid windowtext 1pt;
+                border-right: solid windowtext 1pt;
+                padding: 0 3pt;
+              "
+            >
+              <p
+                class="MsoNormal"
+                align="center"
+                style="
+                  text-align: center;
+                  text-autospace: ideograph-numeric ideograph-other;
+                  margin: 0;
+                  line-height: 1.1;
+                "
+              >
+                <span lang="RU" style="font-size: 8pt; color: black; white-space: nowrap">{{
+                  savedTotalWithVatFormatted()
+                }}</span>
+              </p>
+            </td>
+          </tr>
+          <tr style="page-break-inside: avoid">
+            <td
+              width="737"
+              colspan="9"
+              style="
+                width: 552.85pt;
+                border: solid windowtext 1pt;
+                border-top: none;
+                padding: 0 3pt;
+              "
+            >
+              <p
+                class="MsoNormal"
+                style="
+                  text-autospace: ideograph-numeric ideograph-other;
+                  margin: 0;
+                  line-height: 1.1;
+                "
+              >
+                <b
+                  ><span lang="RU" style="font-size: 8pt; color: black"
+                    >Итого:
+                    <span style="background: transparent">{{ savedTotalWithVatInWords() }}</span>
+                    сум с учетом НДС.</span
+                  ></b
+                >
+              </p>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p class="MsoPlainText" style="text-align: justify; line-height: 12pt">
+        <span lang="RU" style="font-family: 'Times New Roman', serif"
+          >2.3. Подарочные карты могут быть представлены Предъявителем к оплате за приобретаемые
+          товары в течение срока их предъявления в Месте приобретения Товара.</span
+        >
+      </p>
+
+      <p class="MsoPlainText" style="text-align: justify; line-height: 12pt">
+        <span lang="RU" style="font-family: 'Times New Roman', serif"
+          >2.4. Не использованные и/или недоиспользованные подарочные карты с истекшими к
+          предъявлению сроками, возврату и/или обмену не подлежат, и денежная компенсация их
+          стоимости (в т.ч. средств, оставшихся на картах) не производится.
+        </span>
+      </p>
+
+      <p class="MsoPlainText" style="text-align: justify; line-height: 12pt">
+        <span lang="RU" style="font-family: 'Times New Roman', serif"> 2.5. В случае утери </span
+        ><span lang="UZ-CYR" style="font-family: 'Times New Roman', serif">Покупателем</span
+        ><span lang="RU" style="font-family: 'Times New Roman', serif"> (</span
+        ><span lang="UZ-CYR" style="font-family: 'Times New Roman', serif">в т.ч. </span
+        ><span lang="RU" style="font-family: 'Times New Roman', serif"
+          >Предъявителем) подарочной карты, подарочная карта восстановлению не подлежит. Передача
+          товара по поврежденным подарочным картам, или в подлинности, которых у Продавца возникли
+          сомнения, не осуществляется.</span
+        >
+      </p>
+
+      <p class="MsoPlainText" align="center" style="text-align: center; line-height: 12pt">
+        <b><span lang="RU" style="font-family: 'Times New Roman', serif">&nbsp;</span></b>
+      </p>
+
+      <p class="MsoPlainText" align="center" style="text-align: center; line-height: 12pt">
+        <b
+          ><span lang="RU" style="font-size: 10pt; font-family: 'Times New Roman', serif"
+            >3. Сумма договора и порядок расчётов.</span
+          ></b
+        >
+      </p>
+
+      <p class="MsoPlainText" style="text-align: justify; line-height: 12pt">
+        <span lang="RU" style="font-family: 'Times New Roman', serif"
+          >Общая сумма настоящего договора составляет:
+          <b
+            ><span style="background: transparent">{{ savedTotalWithVatFormatted() }}</span></b
+          >
+          <b>
+            (<span style="background: transparent">{{ savedTotalWithVatInWords() }}</span
+            >) </b
+          ><b>сум</b> с учетом НДС. Покупатель обязуется оплатить Подарочные карты путем 100%
+          предоплаты. Сумма предварительной оплаты подлежит оплате Покупателем на расчетный счет
+          Продавца в течение 10</span
+        ><span lang="UZ-CYR" style="font-family: 'Times New Roman', serif"> (десяти)</span
+        ><span lang="RU" style="font-family: 'Times New Roman', serif">
+          банковских дней с даты заключения сторонами настоящего Договора.</span
+        >
+      </p>
+
+      <p class="MsoPlainText" align="center" style="text-align: center; line-height: 12pt">
+        <b
+          ><span lang="RU" style="font-size: 10pt; font-family: 'Times New Roman', serif"
+            >4. Срок действия договора</span
+          ></b
+        ><b><span lang="RU" style="font-family: 'Times New Roman', serif">.</span></b>
+      </p>
+
+      <p class="MsoPlainText" style="text-align: justify; line-height: 12pt">
+        <span lang="RU" style="font-family: 'Times New Roman', serif"
+          >Настоящий Договор вступает в силу с момента его подписания и действует до
+          <span style="color: black">полного </span>исполнения Сторонами своих обязательств и
+          завершения всех взаиморасчетов по настоящему Договору.</span
+        >
+      </p>
+
+      <p class="MsoPlainText" style="text-align: justify; line-height: 12pt">
+        <span lang="RU" style="font-family: 'Times New Roman', serif">&nbsp;</span>
+      </p>
+
+      <p class="MsoPlainText" align="center" style="text-align: center; line-height: 12pt">
+        <b
+          ><span lang="RU" style="font-size: 10pt; font-family: 'Times New Roman', serif"
+            >5. Передача подарочных карт.</span
+          ></b
+        >
+      </p>
+
+      <p class="MsoPlainText" style="text-align: justify; line-height: 12pt">
+        <span lang="RU" style="font-family: 'Times New Roman', serif"
+          >5.1. Подарочные карты будут предоставлены Покупателю </span
+        ><span lang="UZ-CYR" style="font-family: 'Times New Roman', serif">в</span
+        ><span lang="RU" style="font-family: 'Times New Roman', serif"> течение 10 </span
+        ><span lang="UZ-CYR" style="font-family: 'Times New Roman', serif"
+          >(десяти) банковских </span
+        ><span lang="RU" style="font-family: 'Times New Roman', serif"
+          >дней с момента поступления суммы предоплаты на расчетный счет Продавца.
+        </span>
+      </p>
+
+      <p class="MsoPlainText" style="text-align: justify; line-height: 12pt">
+        <span lang="RU" style="font-family: 'Times New Roman', serif"
+          >5.2. Покупатель самостоятельно забирает подарочные карты с офиса Продавца (самовывоз),
+          после получения уведомления Продавца о готовности товара к отгрузке, с указанием даты,
+          времени и места отгрузки, направленного не позднее 3 (трёх) календарных дней до окончания
+          срока поставки. Представитель Покупателя при получении подарочных карт должен предъявить
+          документ, удостоверяющий личность, и правильно оформленную доверенность в соответствии с
+          действующим законодательством Республики Узбекистан.</span
+        >
+      </p>
+
+      <p class="MsoPlainText" style="text-align: justify; line-height: 12pt">
+        <span lang="RU" style="font-family: 'Times New Roman', serif"
+          >5.3. Принятие подарочных карт Покупателем подтверждается подписанием Акта приема-передачи
+          (Приложение № 1).</span
+        >
+      </p>
+
+      <p class="MsoPlainText" style="text-align: justify; line-height: 12pt">
+        <span lang="RU" style="font-family: 'Times New Roman', serif"
+          >5.4. Право собственности на подарочные карты, а также риск случайной гибели или
+          повреждения подарочных карт переходят от Продавца к Покупателю с даты подписания Акта
+          приема-передачи (Приложение № 1).</span
+        >
+      </p>
+
+      <p class="MsoPlainText" style="text-align: justify; line-height: 12pt">
+        <span lang="RU" style="font-family: 'Times New Roman', serif"
+          >5.5. В случаях утраты, кражи, порчи подарочной карты, не позволяющих её идентифицировать,
+          такая подарочная карта не восстанавливается, не обменивается на новую, денежные средства,
+          равные номинальной стоимости подарочной карты, возврату Предъявителю (в т.ч. Покупателю)
+          не подлежат.</span
+        >
+      </p>
+
+      <p class="MsoPlainText" style="text-align: justify; line-height: 12pt">
+        <span lang="RU" style="font-family: 'Times New Roman', serif"
+          >5.6. В течение срока действия Подарочные карты могут предъявляться к оплате многократно,
+          до тех пор, пока номинал подарочной карты не будет истрачен полностью.</span
+        >
+      </p>
+
+      <p class="MsoPlainText" style="text-align: justify; line-height: 12pt">
+        <span lang="RU" style="font-size: 10pt; font-family: 'Times New Roman', serif">&nbsp;</span>
+      </p>
+
+      <p class="MsoPlainText" align="center" style="text-align: center; line-height: 12pt">
+        <b
+          ><span lang="RU" style="font-size: 10pt; font-family: 'Times New Roman', serif"
+            >6. Права и обязанности сторон.</span
+          ></b
+        >
+      </p>
+
+      <p class="MsoPlainText" style="text-align: justify; line-height: 12pt">
+        <b
+          ><span lang="RU" style="font-family: 'Times New Roman', serif"
+            >6.1. Продавец обязан:</span
+          ></b
+        >
+      </p>
+
+      <p class="MsoPlainText" style="text-align: justify; line-height: 12pt">
+        <span lang="RU" style="font-family: 'Times New Roman', serif"
+          >* Передать Покупателю подарочные карты, указанные в п. 2.2. настоящего Договора, в
+          установленные настоящим договором сроки. Факт передачи Подарочных карт подтверждается
+          подписанием Сторонами акта приема-передачи Подарочных карт, который составляется по Форме
+          согласно Приложению № 1, являющемся неотъемлемой частью настоящего Договора.</span
+        >
+      </p>
+
+      <p class="MsoPlainText" style="text-align: justify; line-height: 12pt">
+        <span lang="RU" style="font-family: 'Times New Roman', serif"
+          >* Принимать к оплате подарочные карты во всех Местах приобретения товара, в течение всего
+          срока их предъявления.</span
+        >
+      </p>
+
+      <p class="MsoPlainText" style="text-align: justify; line-height: 12pt">
+        <span lang="RU" style="font-family: 'Times New Roman', serif"
+          >* По истечении срока на предъявление Подарочной карты, Продавец вправе отказать
+          Предъявителю (в т.ч. Покупателю) в покупке Товаров посредством Подарочной карты. При этом
+          денежные средства, равные номинальной стоимости подарочной карты, возврату и/или
+          компенсации Предъявителю (в т.ч. Покупателю) не подлежат.</span
+        >
+      </p>
+
+      <p class="MsoPlainText" style="text-align: justify; line-height: 12pt">
+        <span lang="RU" style="font-family: 'Times New Roman', serif"
+          >* В случае выявления подарочных карт ненадлежащего качества в момент приема-передачи
+          подарочных карт от Продавца к Покупателю, за свой счет и своими силами заменить подарочные
+          карты ненадлежащего качества в течение 3 (трёх) банковских дней.
+        </span>
+      </p>
+
+      <p class="MsoPlainText" style="text-align: justify; line-height: 12pt">
+        <b
+          ><span lang="RU" style="font-family: 'Times New Roman', serif"
+            >6.2. Продавец имеет право:</span
+          ></b
+        >
+      </p>
+
+      <p class="MsoPlainText" style="text-align: justify; line-height: 12pt">
+        <span lang="RU" style="font-family: 'Times New Roman', serif"
+          >* Требовать своевременной оплаты за предоставленные Покупателю подарочные карты.
+        </span>
+      </p>
+
+      <p class="MsoPlainText" style="text-align: justify; line-height: 12pt">
+        <span lang="RU" style="font-family: 'Times New Roman', serif"
+          >* По истечении 5 (пяти) календарных дней после приема-передачи подарочных карт от
+          Продавца к Покупателю, Продавец вправе не рассматривать претензии со стороны Покупателя
+          относительно количества, качества и номинальной стоимости переданных подарочных карт.
+        </span>
+      </p>
+
+      <p class="MsoPlainText" style="text-align: justify; line-height: 12pt">
+        <b
+          ><span lang="RU" style="font-family: 'Times New Roman', serif"
+            >6.3. Покупатель обязан:</span
+          ></b
+        >
+      </p>
+
+      <p class="MsoPlainText" style="text-align: justify; line-height: 12pt">
+        <span lang="RU" style="font-family: 'Times New Roman', serif"
+          >* Оплатить и принять от Продавца подарочные карты в соответствии с условиями настоящего
+          Договора.
+        </span>
+      </p>
+
+      <p class="MsoPlainText" style="text-align: justify; line-height: 12pt">
+        <span lang="RU" style="font-family: 'Times New Roman', serif"
+          >* Подписать и передать Продавцу в обмен на переданные Покупателю Подарочные карты Акт
+          приема-передачи Подарочных карт, составляемый по форме, установленной настоящим Договором
+          (Приложение № 1).</span
+        >
+      </p>
+
+      <p class="MsoPlainText" style="text-align: justify; line-height: 12pt">
+        <span lang="RU" style="font-family: 'Times New Roman', serif"
+          >* При принятии Подарочных карт от Продавца согласно условиям настоящего Договора,
+          осуществить проверку и приемку Подарочных карт по количеству, качеству и номинальной
+          стоимости. По истечении 5 (пяти) календарных дней после приемки товара претензии по
+          количеству, качеству и номинальной стоимости Подарочных карт Продавцом не
+          принимаются.</span
+        >
+      </p>
+
+      <p class="MsoPlainText" style="text-align: justify; line-height: 12pt">
+        <span lang="RU" style="font-family: 'Times New Roman', serif"
+          >6.4. Покупатель имеет право требовать своевременного выполнения обязательств по
+          настоящему Договору.</span
+        >
+      </p>
+
+      <p class="MsoPlainText" align="center" style="text-align: center; line-height: 12pt">
+        <b
+          ><span lang="RU" style="font-size: 10pt; font-family: 'Times New Roman', serif"
+            >&nbsp;</span
+          ></b
+        >
+      </p>
+
+      <p class="MsoPlainText" align="center" style="text-align: center; line-height: 12pt">
+        <b
+          ><span lang="RU" style="font-size: 10pt; font-family: 'Times New Roman', serif"
+            >7. Ответственность сторон.</span
+          ></b
+        >
+      </p>
+
+      <p class="MsoPlainText" style="text-align: justify; line-height: 12pt">
+        <span lang="RU" style="font-family: 'Times New Roman', serif"
+          >В случае неисполнения или ненадлежащего исполнения иных обязательств, предусмотренных
+          настоящим Договором, Стороны несут ответственность в соответствии с действующим
+          законодательством Республики Узбекистан.</span
+        >
+      </p>
+
+      <p class="MsoPlainText" style="text-align: justify; line-height: 12pt">
+        <span lang="RU" style="font-size: 10pt; font-family: 'Times New Roman', serif">&nbsp;</span>
+      </p>
+
+      <p class="MsoPlainText" align="center" style="text-align: center; line-height: 12pt">
+        <b
+          ><span lang="RU" style="font-size: 10pt; font-family: 'Times New Roman', serif"
+            >8. Порядок разрешения споров.</span
+          ></b
+        >
+      </p>
+
+      <p class="MsoPlainText" style="text-align: justify; line-height: 12pt">
+        <span lang="RU" style="font-family: 'Times New Roman', serif"
+          >8.1 Споры, возникающие между сторонами, решаются путем переговоров между сторонами.
+          Подтверждением проведения переговоров является направленное претензионное письмо,
+          оформленное в соответствии с действующим законодательством Республики Узбекистан. Стороны
+          устанавливают предварительный претензионный порядок разрешения споров. Срок ответа на
+          претензию составляет 19 (девятнадцать) календарных дней с даты направления претензии
+          Стороной. В случае отсутствия ответа на претензионное письмо со стороны получателя, это
+          является достаточным основанием для признания отсутствия заинтересованности в проведении
+          переговоров.</span
+        >
+      </p>
+
+      <p class="MsoPlainText" style="text-align: justify; line-height: 12pt">
+        <span lang="RU" style="font-family: 'Times New Roman', serif"
+          >8.2. В случае возникновения разногласий все вопросы решаются путем двусторонних
+          переговоров, а при невозможности прийти к согласию - в Ташкентском межрайонном
+          экономическом суде. Предсудебная процедура обязательна.
+        </span>
+      </p>
+
+      <p class="MsoPlainText" align="center" style="text-align: center; line-height: 12pt">
+        <span lang="RU" style="font-family: 'Times New Roman', serif">&nbsp;</span>
+      </p>
+
+      <p class="MsoNormal" align="center" style="text-align: center; line-height: 12pt">
+        <b><span lang="RU" style="font-size: 10pt">9. Антикоррупционная оговорка</span></b>
+      </p>
+
+      <p class="MsoPlainText" style="text-align: justify; line-height: 12pt">
+        <span lang="RU" style="font-family: 'Times New Roman', serif"
+          >9.1. Стороны соблюдают все применимые нормы антикоррупционного законодательства. Стороны
+          признают и подтверждают, что каждая из них проводит политику полной нетерпимости к
+          взяточничеству и коррупции, предполагающую полный запрет коррупционных действий и
+          совершения выплат за содействие / выплат, целью которых является упрощение формальностей в
+          связи с хозяйственной деятельностью, обеспечение более быстрого решения тех или иных
+          вопросов. Стороны, их аффилированные лица, работники, а также посредники и представители,
+          которые прямо или косвенно участвуют в исполнении обязательств Сторонами (в том числе
+          агенты, комиссионеры, таможенные брокеры и иные третьи лица) не принимают, не выплачивают,
+          не предлагают выплатить и не разрешают (санкционируют) выплату/получение каких-либо
+          денежных средств или передачу каких-либо ценностей (в том числе нематериальных) прямо или
+          косвенно, любым лицам, с целью оказания влияния на действия или решения с намерением
+          получить какие-либо неправомерные преимущества, в том числе в обход установленного
+          законодательством порядка, или преследующие иные неправомерные цели. Положения настоящего
+          пункта являются заверениями об обстоятельствах, имеющими для Сторон существенное значение.
+          Стороны полагаются на такие заверения при заключении Договора.
+        </span>
+      </p>
+
+      <p class="MsoPlainText" style="text-align: justify; line-height: 12pt">
+        <span lang="RU" style="font-family: 'Times New Roman', serif"
+          >9.2. В случае нарушения одной из Сторон обязательств по соблюдению требований,
+          предусмотренных настоящим пунктом, Сторона вправе немедленно отказаться от Договора в
+          одностороннем внесудебном порядке, направив письменное уведомление о расторжении. Договор
+          считается расторгнутым по истечении 10 (десяти) календарных дней с даты получения другой
+          Стороной соответствующего письменного уведомления.</span
+        >
+      </p>
+
+      <p class="MsoPlainText" style="text-align: justify; line-height: 12pt">
+        <span lang="RU" style="font-family: 'Times New Roman', serif"
+          >9.3. В случае возникновения у Стороны подозрений, что произошло или может произойти
+          нарушение каких-либо положений настоящего пункта, соответствующая Сторона обязуется как
+          можно скорее уведомить другую Сторону о своих подозрениях в письменной форме.<br />
+          Стороны соглашаются, что будут использовать следующие адреса для уведомления о
+          нарушении/угрозе нарушения настоящего пункта:<br />
+          Адрес электронной почты ИП ООО «Anglesey Food»: compliance&#64;korzinka.uz.<br />
+          Адрес электронной почты {{ savedCompanyName() }}: ___________________</span
+        >
+      </p>
+
+      <p class="MsoPlainText" align="center" style="text-align: center; line-height: 12pt">
+        <span lang="RU" style="font-family: 'Times New Roman', serif">&nbsp;</span>
+      </p>
+
+      <p class="MsoNormal" align="center" style="text-align: center; line-height: 12pt">
+        <b><span lang="RU" style="font-size: 10pt">10. Прочие условия</span></b>
+      </p>
+
+      <p class="MsoPlainText" style="text-align: justify; line-height: 12pt">
+        <span lang="RU" style="font-family: 'Times New Roman', serif"
+          >10.1. Стороны освобождаются от ответственности за частичное или полное неиспол­нение
+          обязательств по настоящему Договору, если неисполнение является следствием обстоятельств,
+          которые обе Стороны не могли предотвратить разумными мерами. К об­стоятельствам
+          непреодолимой силы относятся события, на которые обе стороны не могут оказать влияния и за
+          возникновение которых не несут ответственности: как, например, наводнение, землетрясение,
+          пожар, аварии, другие стихийные бедствия, а также забастовки, правительственные
+          постановления или распоряжения государственных органов.
+        </span>
+      </p>
+
+      <p class="MsoPlainText" style="text-align: justify; line-height: 12pt">
+        <span lang="RU" style="font-family: 'Times New Roman', serif"
+          >10.2. Стороны гарантируют обеспечение конфиденциальности в отношении информации,
+          передаваемой друг другу.</span
+        >
+      </p>
+
+      <p class="MsoPlainText" style="text-align: justify; line-height: 12pt">
+        <span lang="RU" style="font-family: 'Times New Roman', serif"
+          >10.3. Уступка прав требований по Договору допускается только после получения письменного
+          согласия другой стороны.</span
+        >
+      </p>
+
+      <p class="MsoPlainText" style="text-align: justify; line-height: 12pt">
+        <span lang="RU" style="font-family: 'Times New Roman', serif"
+          >10.4. Стороны гарантируют друг другу, что на дату подписания настоящего договора нет
+          каких-либо запретов или ограничений, препятствующих исполнению настоящего Договора.</span
+        >
+      </p>
+
+      <p class="MsoPlainText" style="text-align: justify; line-height: 12pt">
+        <span lang="RU" style="font-family: 'Times New Roman', serif"
+          >10.5. Любые изменения и дополнения к настоящему договору имеют силу только в том случае,
+          если они оформлены в письменном виде и подписаны обеими Сторонами. В случае изменения
+          Налогового Кодекса Республики Узбекистан, с учетом изменений будет составлено
+          дополнительное соглашение.</span
+        >
+      </p>
+
+      <p class="MsoPlainText" style="text-align: justify; line-height: 12pt">
+        <span lang="RU" style="font-family: 'Times New Roman', serif"
+          >10.6. Настоящий договор может быть расторгнут досрочно, по обоюдному письменному согласию
+          сторон, а также по иным основаниям, предусмотренным действующим законодательством
+          Республики Узбекистан. Сторона, решившая расторгнуть настоящий Договор, должна направить
+          письменное уведомление не позднее 20 (двадцати) банковских дней до предполагаемой даты
+          расторжения.</span
+        >
+      </p>
+
+      <p class="MsoPlainText" style="text-align: justify; line-height: 12pt">
+        <span lang="RU" style="font-family: 'Times New Roman', serif"
+          >10.7.
+          <span style="color: black; background: white"
+            >Покупатель настоящим заявляет, что он прочитал, понял и будет соблюдать Кодекс
+            поведения для бизнес-партнеров ИП ООО «Anglesey Food», размещенный на официальном сайте
+            ИП ООО «Anglesey Food» по ссылке https://korzinka.uz/page/business-partners-code, за
+            исключением случаев, когда&nbsp;Покупатель утверждает и заверяет, что его политика,
+            внутренние правила и процедуры подразумевают и обеспечивают более высокие стандарты
+            добросовестности, прозрачности и защиты социальной и экологической среды</span
+          ></span
+        >
+      </p>
+
+      <p class="MsoPlainText" style="text-align: justify; line-height: 12pt">
+        <span
+          lang="RU"
+          style="font-family: 'Times New Roman', serif; color: black; background: white"
+          >10.8.</span
+        ><span lang="RU"> </span
+        ><span
+          lang="RU"
+          style="font-family: 'Times New Roman', serif; color: black; background: white"
+          >Покупатель уведомлен о возможности осуществления связи для соблюдения требований,
+          предоставленных ИП ООО Anglesey Food. В случае возникновения серьезных жалоб и вопросов,
+          связанных с этическим поведением сотрудников ИП ООО Anglesey Food (например, подозрения в
+          коррупции, мошенничестве, домогательствах и т.д.), Покупателю следует обращаться
+          непосредственно на электронную почту: compliance&#64;korzinka.uz. Все сообщенные случаи
+          будут рассмотрены в соответствии с внутренними нормативными актами и применимым
+          законодательством Республики Узбекистан.</span
+        >
+      </p>
+
+      <p class="MsoPlainText" style="text-align: justify; line-height: 12pt">
+        <span lang="RU" style="font-family: 'Times New Roman', serif"
+          >10.9. Порядок использования подарочных карт указан на подарочных картах.</span
+        >
+      </p>
+
+      <p class="MsoNormal" style="text-align: justify; line-height: 12pt">
+        <span lang="RU" style="font-size: 10pt"
+          >10.10. Во всем, что не предусмотрено настоящим Договором, Стороны руководствуются
+          законодательством Республики Узбекистан.</span
+        >
+      </p>
+
+      <p class="MsoNormal" align="center" style="text-align: center; line-height: 12pt">
+        <b><span lang="RU" style="font-size: 10pt">&nbsp;</span></b>
+      </p>
+
+      <p class="MsoNormal" align="center" style="text-align: center; line-height: 12pt">
+        <b><span lang="RU" style="font-size: 10pt">АДРЕСА И ИНЫЕ РЕКВИЗИТЫ СТОРОН.</span></b>
+      </p>
+
+      <table
+        class="MsoTableGrid"
+        border="1"
+        cellspacing="0"
+        cellpadding="0"
+        style="border-collapse: collapse; border: none"
+      >
+        <tbody>
+          <tr>
+            <td
+              width="319"
+              valign="top"
+              style="width: 239.55pt; border: solid windowtext 1pt; padding: 0 3pt"
+            >
+              <p class="MsoNormal" align="center" style="text-align: center; line-height: 12pt">
+                <b><span style="font-size: 10pt">«</span></b
+                ><b><span lang="RU" style="font-size: 10pt">Продавец</span></b
+                ><b><span style="font-size: 10pt">»: </span></b>
+              </p>
+              <p class="MsoPlainText" align="center" style="text-align: center; line-height: 12pt">
+                <b><span lang="RU" style="font-family: 'Times New Roman', serif">ИП</span></b
+                ><b><span lang="RU" style="font-family: 'Times New Roman', serif"> </span></b
+                ><b><span lang="RU" style="font-family: 'Times New Roman', serif">ООО</span></b
+                ><b><span style="font-family: 'Times New Roman', serif"> «Anglesey Food»</span></b>
+              </p>
+              <p class="MsoPlainText" style="text-align: justify; line-height: 12pt">
+                <span lang="RU" style="font-family: 'Times New Roman', serif"
+                  >Адрес: г. Ташкент, ул. Тураб-Тула 57</span
+                >
+              </p>
+              <p class="MsoPlainText" style="text-align: justify; line-height: 12pt">
+                <span lang="RU" style="font-family: 'Times New Roman', serif">ИНН: 202099756</span>
+              </p>
+              <p class="MsoPlainText" style="text-align: justify; line-height: 12pt">
+                <span lang="RU" style="font-family: 'Times New Roman', serif"
+                  >Р/с: 20208000300578902046</span
+                >
+              </p>
+              <p class="MsoPlainText" style="text-align: justify; line-height: 12pt">
+                <span lang="RU" style="font-family: 'Times New Roman', serif"
+                  >Банк: Академический Центр банковских услуг АО «Узнацбанк»
+                </span>
+              </p>
+              <p class="MsoPlainText" style="text-align: justify; line-height: 12pt">
+                <span lang="RU" style="font-family: 'Times New Roman', serif">МФО: 00450</span>
+              </p>
+              <p class="MsoPlainText" style="text-align: justify; line-height: 12pt">
+                <span lang="RU" style="font-family: 'Times New Roman', serif">ОКЭД: 47110</span>
+              </p>
+              <p class="MsoPlainText" style="text-align: justify; line-height: 12pt">
+                <span lang="RU" style="font-family: 'Times New Roman', serif"
+                  >Эл. почта: info&#64;korzinka.uz</span
+                >
+              </p>
+              <p class="MsoPlainText" style="text-align: justify; line-height: 12pt">
+                <span lang="RU" style="font-family: 'Times New Roman', serif"
+                  >Тел.: 71-231-83-02
+                </span>
+              </p>
+              <p class="MsoNormal" style="text-align: justify; line-height: 12pt">
+                <span lang="RU" style="font-size: 10pt">&nbsp;</span>
+              </p>
+            </td>
+            <td
+              width="320"
+              valign="top"
+              style="
+                width: 240.05pt;
+                border: solid windowtext 1pt;
+                border-left: none;
+                padding: 0 3pt;
+              "
+            >
+              <p class="MsoNormal" align="center" style="text-align: center; line-height: 12pt">
+                <b><span lang="RU" style="font-size: 10pt">«Покупатель»:</span></b>
+              </p>
+              <p class="MsoNormal" align="center" style="text-align: center; line-height: 12pt">
+                <b
+                  ><span lang="RU" style="font-size: 10.5pt; background: transparent">{{
+                    savedCompanyName()
+                  }}</span></b
+                >
+              </p>
+              <p class="MsoNormal" align="center" style="text-align: center; line-height: 12pt">
+                <span lang="RU" style="font-size: 10.5pt; background: transparent">&nbsp;</span>
+              </p>
+              @for (line of savedRequisitesLines(); track line) {
+              <p class="MsoNormal" style="line-height: 12pt">
+                <span lang="RU" style="font-size: 10.5pt; background: transparent">{{ line }}</span>
+              </p>
+              }
+            </td>
+          </tr>
+          <tr>
+            <td
+              width="319"
+              valign="top"
+              style="
+                width: 239.55pt;
+                border: solid windowtext 1pt;
+                border-top: none;
+                padding: 0 3pt;
+              "
+            >
+              <p class="MsoNormal" style="line-height: 12pt">
+                <span lang="RU" style="font-size: 10pt">&nbsp;</span>
+              </p>
+              <p class="MsoNormal" style="line-height: 12pt">
+                <span lang="RU" style="font-size: 10pt">________________________</span>
+              </p>
+              <p class="MsoNormal" style="line-height: 12pt">
+                <span lang="RU" style="font-size: 10pt">М.П.</span>
+              </p>
+              <p class="MsoNormal" align="center" style="text-align: center; line-height: 12pt">
+                <span lang="RU" style="font-size: 10pt">&nbsp;</span>
+              </p>
+            </td>
+            <td
+              width="320"
+              valign="top"
+              style="
+                width: 240.05pt;
+                border-top: none;
+                border-left: none;
+                border-bottom: solid windowtext 1pt;
+                border-right: solid windowtext 1pt;
+                padding: 0 3pt;
+              "
+            >
+              <p class="MsoNormal" style="line-height: 12pt">
+                <span lang="RU" style="font-size: 10pt">&nbsp;</span>
+              </p>
+              <p class="MsoNormal" style="line-height: 12pt">
+                <span lang="RU" style="font-size: 10pt">___________________________ </span>
+              </p>
+              <p class="MsoNormal" style="line-height: 12pt">
+                <span lang="RU" style="font-size: 10pt">М.П.</span>
+              </p>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- PAGE BREAK - Приложение №1 -->
+      <div class="page-break"></div>
+
+      <p class="MsoNormal" align="right" style="text-align: right; line-height: 12pt">
+        <b><span lang="RU" style="font-size: 10pt">Приложение №1</span></b>
+      </p>
+
+      <p class="MsoPlainText" align="right" style="text-align: right; line-height: 12pt">
+        <b
+          ><span lang="RU" style="font-size: 10pt; font-family: 'Times New Roman', serif"
+            >к Договору купли-продажи №</span
+          ></b
+        ><span lang="RU"> </span
+        ><b
+          ><span
+            lang="RU"
+            style="font-size: 10pt; font-family: 'Times New Roman', serif; background: transparent"
+            >{{ savedContractNumber() }}</span
+          ></b
+        ><span lang="RU"> </span
+        ><b
+          ><span lang="RU" style="font-size: 10pt; font-family: 'Times New Roman', serif">
+          </span></b
+        ><span lang="RU"> </span
+        ><b
+          ><span lang="RU" style="font-size: 10pt; font-family: 'Times New Roman', serif">
+          </span></b
+        ><span lang="RU" style="font-size: 10pt"> </span
+        ><b
+          ><span lang="RU" style="font-size: 10pt; font-family: 'Times New Roman', serif">
+          </span></b
+        ><span lang="RU" style="font-size: 10pt; font-family: 'Times New Roman', serif">
+          <b> </b> <b> </b> <b> </b> <b> </b
+        ></span>
+      </p>
+
+      <p class="MsoPlainText" align="right" style="text-align: right; line-height: 12pt">
+        <b
+          ><span lang="RU" style="font-size: 10pt; font-family: 'Times New Roman', serif">
+            от «<span style="background: transparent">{{ formattedDate().day }}</span
+            >» <span style="background: transparent">{{ formattedDate().month }}</span></span
+          ></b
+        ><span lang="RU" style="font-size: 10pt; font-family: 'Times New Roman', serif">
+          <b>{{ formattedDate().year }} г.</b></span
+        >
+      </p>
+
+      <p class="MsoPlainText" align="center" style="text-align: center; line-height: 12pt">
+        <b
+          ><span lang="RU" style="font-size: 10pt; font-family: 'Times New Roman', serif"
+            >&nbsp;</span
+          ></b
+        >
+      </p>
+
+      <p class="MsoPlainText" align="center" style="text-align: center; line-height: 12pt">
+        <b
+          ><span lang="RU" style="font-size: 10pt; font-family: 'Times New Roman', serif"
+            >АКТ</span
+          ></b
+        >
+      </p>
+
+      <p class="MsoPlainText" align="center" style="text-align: center; line-height: 12pt">
+        <b
+          ><span lang="RU" style="font-size: 10pt; font-family: 'Times New Roman', serif"
+            >приема-передачи Подарочных карт</span
+          ></b
+        >
+      </p>
+
+      <table
+        width="100%"
+        border="0"
+        cellpadding="0"
+        cellspacing="0"
+        style="border-collapse: collapse"
+      >
+        <tr>
+          <td style="text-align: left">
+            <span lang="RU" style="font-size: 10pt; font-family: 'Times New Roman', serif"
+              >г. Ташкент</span
+            >
+          </td>
+          <td style="text-align: right">
+            <span lang="RU" style="font-size: 10pt; font-family: 'Times New Roman', serif"
+              >«___» ___________ 2026 г.</span
+            >
+          </td>
+        </tr>
+      </table>
+
+      <p class="MsoPlainText" style="text-align: justify; line-height: 12pt">
+        <span lang="RU" style="font-size: 10pt; font-family: 'Times New Roman', serif">&nbsp;</span>
+      </p>
+
+      <p class="MsoPlainText" style="text-align: justify; text-indent: 35.4pt; line-height: 12pt">
+        <span lang="RU" style="font-family: 'Times New Roman', serif">&nbsp;</span>
+      </p>
+
+      <p class="MsoPlainText" style="text-align: justify; text-indent: 35.4pt; line-height: 12pt">
+        <b
+          ><span lang="RU" style="font-family: 'Times New Roman', serif; background: transparent">{{
+            savedCompanyName()
+          }}</span></b
+        ><b><span lang="RU" style="font-family: 'Times New Roman', serif">, </span></b
+        ><span lang="RU" style="font-family: 'Times New Roman', serif"
+          >именуемый в дальнейшем Покупатель, в лице
+          <span style="background: transparent"
+            >{{ savedPosition() }} <b>{{ savedFullName() }}</b></span
+          ><b>,</b> действующего на основании
+          <span style="background: transparent">{{ savedDocumentBasis() }}</span
+          ><b>.</b>, действующего на основании устава, с одной стороны, и
+          <b>ИП ООО ANGLESEY FOOD</b>, именуемый в дальнейшем «Продавец», в лице Руководителя отдела
+          Korzinka-Biznes Шакирходжаев Ф., действующего на основании доверенности №045B от
+          04.11.2025г., с другой стороны, совместно именуемые Стороны, а по-отдельности «Сторона»,
+          заключили настоящий Акт о нижеследующем:</span
+        >
+      </p>
+
+      <p class="MsoPlainText" style="text-align: justify; text-indent: 35.4pt; line-height: 12pt">
+        <span lang="RU" style="font-family: 'Times New Roman', serif">&nbsp;</span>
+      </p>
+
+      <p class="MsoPlainText" style="text-align: justify; text-indent: 35.4pt; line-height: 12pt">
+        <b><span lang="RU" style="font-family: 'Times New Roman', serif">1.</span></b
+        ><span lang="RU" style="font-family: 'Times New Roman', serif">
+          В соответствии с Договором купли-продажи
+          <b
+            >№ <span style="background: transparent">{{ savedContractNumber() }}</span> от «<span
+              style="background: transparent"
+              >{{ formattedDate().day }}</span
+            >» <span style="background: transparent">{{ formattedDate().month }}</span></b
+          >
+          <b>{{ formattedDate().year }} г</b>. (далее – «Договор») Продавец передал, а Покупатель
+          принял следующие Подарочные карты:</span
+        >
+      </p>
+
+      <p
+        class="MsoPlainText"
+        style="text-align: justify; text-indent: 35.4pt; line-height: 12pt"
+      ></p>
+
+      <table
+        class="MsoNormalTable"
+        border="0"
+        cellspacing="0"
+        cellpadding="0"
+        width="737"
+        style="margin-left: -35.7pt; border-collapse: collapse"
+      >
+        <tbody>
+          <tr style="page-break-inside: avoid">
+            <td
+              width="161"
+              rowspan="2"
+              style="width: 120.5pt; border: solid windowtext 1pt; padding: 0 3pt"
+            >
+              <p
+                class="MsoNormal"
+                align="center"
+                style="
+                  text-align: center;
+                  text-autospace: ideograph-numeric ideograph-other;
+                  margin: 0;
+                  line-height: 1.1;
+                "
+              >
+                <b
+                  ><span lang="RU" style="font-size: 8pt; color: black"
+                    >Наименование Продукции</span
+                  ></b
+                >
+              </p>
+            </td>
+            <td
+              width="113"
+              rowspan="2"
+              style="
+                width: 85.05pt;
+                border: solid windowtext 1pt;
+                border-left: none;
+                padding: 0 3pt;
+              "
+            >
+              <p
+                class="MsoNormal"
+                align="center"
+                style="
+                  text-align: center;
+                  text-autospace: ideograph-numeric ideograph-other;
+                  margin: 0;
+                  line-height: 1.1;
+                "
+              >
+                <b
+                  ><span lang="RU" style="font-size: 8pt; color: black"
+                    >Идентификацион<br />ный код и<br />название по<br />Единому<br />электронному<br />национальному<br />каталогу
+                    товаров<br />(услуг)</span
+                  ></b
+                >
+              </p>
+            </td>
+            <td
+              width="38"
+              rowspan="2"
+              style="
+                width: 28.35pt;
+                border: solid windowtext 1pt;
+                border-left: none;
+                padding: 0 3pt;
+              "
+            >
+              <p
+                class="MsoNormal"
+                align="center"
+                style="
+                  text-align: center;
+                  text-autospace: ideograph-numeric ideograph-other;
+                  margin: 0;
+                  line-height: 1.1;
+                "
+              >
+                <b><span lang="RU" style="font-size: 8pt; color: black">Ед. изм</span></b>
+              </p>
+            </td>
+            <td
+              width="47"
+              rowspan="2"
+              style="
+                width: 35.45pt;
+                border: solid windowtext 1pt;
+                border-left: none;
+                padding: 0 3pt;
+              "
+            >
+              <p
+                class="MsoNormal"
+                align="center"
+                style="
+                  text-align: center;
+                  text-autospace: ideograph-numeric ideograph-other;
+                  margin: 0;
+                  line-height: 1.1;
+                "
+              >
+                <b><span lang="RU" style="font-size: 8pt; color: black">Кол-во</span></b>
+              </p>
+            </td>
+            <td
+              width="76"
+              rowspan="2"
+              style="width: 56.7pt; border: solid windowtext 1pt; border-left: none; padding: 0 3pt"
+            >
+              <p
+                class="MsoNormal"
+                align="center"
+                style="
+                  text-align: center;
+                  text-autospace: ideograph-numeric ideograph-other;
+                  margin: 0;
+                  line-height: 1.1;
+                "
+              >
+                <b><span lang="RU" style="font-size: 8pt; color: black">Цена</span></b>
+              </p>
+            </td>
+            <td
+              width="95"
+              rowspan="2"
+              style="width: 70.9pt; border: solid windowtext 1pt; border-left: none; padding: 0 3pt"
+            >
+              <p
+                class="MsoNormal"
+                align="center"
+                style="
+                  text-align: center;
+                  text-autospace: ideograph-numeric ideograph-other;
+                  margin: 0;
+                  line-height: 1.1;
+                "
+              >
+                <b
+                  ><span lang="RU" style="font-size: 8pt; color: black"
+                    >Стоимость<br />поставки</span
+                  ></b
+                >
+              </p>
+            </td>
+            <td
+              width="113"
+              colspan="2"
+              style="
+                width: 85.05pt;
+                border: solid windowtext 1pt;
+                border-left: none;
+                padding: 0 3pt;
+              "
+            >
+              <p
+                class="MsoNormal"
+                align="center"
+                style="
+                  text-align: center;
+                  text-autospace: ideograph-numeric ideograph-other;
+                  margin: 0;
+                  line-height: 1.1;
+                "
+              >
+                <b><span lang="RU" style="font-size: 8pt; color: black">НДС</span></b>
+              </p>
+            </td>
+            <td
+              width="94"
+              rowspan="2"
+              style="
+                width: 70.85pt;
+                border: solid windowtext 1pt;
+                border-left: none;
+                padding: 0 3pt;
+              "
+            >
+              <p
+                class="MsoNormal"
+                align="center"
+                style="
+                  text-align: center;
+                  text-autospace: ideograph-numeric ideograph-other;
+                  margin: 0;
+                  line-height: 1.1;
+                "
+              >
+                <b
+                  ><span lang="RU" style="font-size: 8pt; color: black"
+                    >Стоимость<br />поставки с<br />учётом НДС</span
+                  ></b
+                >
+              </p>
+            </td>
+          </tr>
+          <tr>
+            <td
+              width="28"
+              style="
+                width: 21.25pt;
+                border-top: none;
+                border-left: none;
+                border-bottom: solid windowtext 1pt;
+                border-right: solid windowtext 1pt;
+                padding: 0 3pt;
+              "
+            >
+              <p
+                class="MsoNormal"
+                align="center"
+                style="
+                  text-align: center;
+                  text-autospace: ideograph-numeric ideograph-other;
+                  margin: 0;
+                  line-height: 1.1;
+                "
+              >
+                <b
+                  ><span lang="RU" style="font-size: 8pt; color: black"
+                    >С<br />та<br />вк<br />а<br />%</span
+                  ></b
+                >
+              </p>
+            </td>
+            <td
+              width="85"
+              style="
+                width: 63.8pt;
+                border-top: none;
+                border-left: none;
+                border-bottom: solid windowtext 1pt;
+                border-right: solid windowtext 1pt;
+                padding: 0 3pt;
+              "
+            >
+              <p
+                class="MsoNormal"
+                align="center"
+                style="
+                  text-align: center;
+                  text-autospace: ideograph-numeric ideograph-other;
+                  margin: 0;
+                  line-height: 1.1;
+                "
+              >
+                <b><span lang="RU" style="font-size: 8pt; color: black">Сумма</span></b>
+              </p>
+            </td>
+          </tr>
+          @for (row of savedTableRows(); track row.id) {
+          <tr style="page-break-inside: avoid">
+            <td
+              width="161"
+              style="width: 120.5pt; border: solid windowtext 1pt; border-top: none; padding: 0 3pt"
+            >
+              <p
+                class="MsoNormal"
+                align="center"
+                style="
+                  text-align: center;
+                  text-autospace: ideograph-numeric ideograph-other;
+                  margin: 0;
+                  line-height: 1.1;
+                "
+              >
+                <span lang="UZ-CYR" style="font-size: 8pt; color: black"
+                  >Подарочная карта korzinka.uz на предъявителя номиналом
+                  {{ formatNumber(row.sum) }} сум</span
+                >
+              </p>
+            </td>
+            <td
+              width="113"
+              style="
+                width: 85.05pt;
+                border-top: none;
+                border-left: none;
+                border-bottom: solid windowtext 1pt;
+                border-right: solid windowtext 1pt;
+                padding: 0 3pt;
+              "
+            >
+              <p
+                class="MsoNormal"
+                align="center"
+                style="
+                  text-align: center;
+                  text-autospace: ideograph-numeric ideograph-other;
+                  margin: 0;
+                  line-height: 1.1;
+                "
+              >
+                <span lang="RU" style="font-size: 8pt; color: black"
+                  >09800001005000000 - Подарочная карта, ваучер</span
+                >
+              </p>
+            </td>
+            <td
+              width="38"
+              style="
+                width: 28.35pt;
+                border-top: none;
+                border-left: none;
+                border-bottom: solid windowtext 1pt;
+                border-right: solid windowtext 1pt;
+                padding: 0 3pt;
+              "
+            >
+              <p
+                class="MsoNormal"
+                align="center"
+                style="
+                  text-align: center;
+                  text-autospace: ideograph-numeric ideograph-other;
+                  margin: 0;
+                  line-height: 1.1;
+                "
+              >
+                <span lang="RU" style="font-size: 8pt; color: black">шт.</span>
+              </p>
+            </td>
+            <td
+              width="47"
+              style="
+                width: 35.45pt;
+                border-top: none;
+                border-left: none;
+                border-bottom: solid windowtext 1pt;
+                border-right: solid windowtext 1pt;
+                padding: 0 3pt;
+              "
+            >
+              <p
+                class="MsoNormal"
+                align="center"
+                style="
+                  text-align: center;
+                  text-autospace: ideograph-numeric ideograph-other;
+                  margin: 0;
+                  line-height: 1.1;
+                "
+              >
+                <span lang="RU" style="font-size: 8pt; color: black">{{ row.count }}</span>
+              </p>
+            </td>
+            <td
+              width="76"
+              style="
+                width: 56.7pt;
+                border-top: none;
+                border-left: none;
+                border-bottom: solid windowtext 1pt;
+                border-right: solid windowtext 1pt;
+                padding: 0 3pt;
+              "
+            >
+              <p
+                class="MsoNormal"
+                align="center"
+                style="
+                  text-align: center;
+                  text-autospace: ideograph-numeric ideograph-other;
+                  margin: 0;
+                  line-height: 1.1;
+                "
+              >
+                <span lang="RU" style="font-size: 8pt; color: black; white-space: nowrap">{{
+                  formatMoney(getRowPrice(row))
+                }}</span>
+              </p>
+            </td>
+            <td
+              width="95"
+              style="
+                width: 70.9pt;
+                border-top: none;
+                border-left: none;
+                border-bottom: solid windowtext 1pt;
+                border-right: solid windowtext 1pt;
+                padding: 0 3pt;
+              "
+            >
+              <p
+                class="MsoNormal"
+                align="center"
+                style="
+                  text-align: center;
+                  text-autospace: ideograph-numeric ideograph-other;
+                  margin: 0;
+                  line-height: 1.1;
+                "
+              >
+                <span lang="RU" style="font-size: 8pt; color: black; white-space: nowrap">{{
+                  formatMoney(getRowDeliveryCost(row))
+                }}</span>
+              </p>
+            </td>
+            <td
+              width="28"
+              style="
+                width: 21.25pt;
+                border-top: none;
+                border-left: none;
+                border-bottom: solid windowtext 1pt;
+                border-right: solid windowtext 1pt;
+                padding: 0 3pt;
+              "
+            >
+              <p
+                class="MsoNormal"
+                align="center"
+                style="
+                  text-align: center;
+                  text-autospace: ideograph-numeric ideograph-other;
+                  margin: 0;
+                  line-height: 1.1;
+                "
+              >
+                <span lang="RU" style="font-size: 8pt; color: black">12</span>
+              </p>
+            </td>
+            <td
+              width="85"
+              style="
+                width: 63.8pt;
+                border-top: none;
+                border-left: none;
+                border-bottom: solid windowtext 1pt;
+                border-right: solid windowtext 1pt;
+                padding: 0 3pt;
+              "
+            >
+              <p
+                class="MsoNormal"
+                align="center"
+                style="
+                  text-align: center;
+                  text-autospace: ideograph-numeric ideograph-other;
+                  margin: 0;
+                  line-height: 1.1;
+                "
+              >
+                <span lang="RU" style="font-size: 8pt; color: black; white-space: nowrap">{{
+                  formatMoney(getRowVatAmount(row))
+                }}</span>
+              </p>
+            </td>
+            <td
+              width="94"
+              style="
+                width: 70.85pt;
+                border-top: none;
+                border-left: none;
+                border-bottom: solid windowtext 1pt;
+                border-right: solid windowtext 1pt;
+                padding: 0 3pt;
+              "
+            >
+              <p
+                class="MsoNormal"
+                align="center"
+                style="
+                  text-align: center;
+                  text-autospace: ideograph-numeric ideograph-other;
+                  margin: 0;
+                  line-height: 1.1;
+                "
+              >
+                <span lang="UZ-CYR" style="font-size: 8pt; color: black; white-space: nowrap">{{
+                  formatNumber(getRowTotalWithVat(row))
+                }}</span>
+              </p>
+            </td>
+          </tr>
+          }
+          <tr style="page-break-inside: avoid">
+            <td
+              width="435"
+              colspan="5"
+              style="
+                width: 326.05pt;
+                border: solid windowtext 1pt;
+                border-top: none;
+                padding: 0 3pt;
+              "
+            >
+              <p
+                class="MsoNormal"
+                align="right"
+                style="
+                  text-align: right;
+                  text-autospace: ideograph-numeric ideograph-other;
+                  margin: 0;
+                  line-height: 1.1;
+                "
+              >
+                <b><span lang="RU" style="font-size: 8pt; color: black">Итого:</span></b>
+              </p>
+            </td>
+            <td
+              width="95"
+              style="
+                width: 70.9pt;
+                border-top: none;
+                border-left: none;
+                border-bottom: solid windowtext 1pt;
+                border-right: solid windowtext 1pt;
+                padding: 0 3pt;
+              "
+            >
+              <p
+                class="MsoNormal"
+                align="center"
+                style="
+                  text-align: center;
+                  text-autospace: ideograph-numeric ideograph-other;
+                  margin: 0;
+                  line-height: 1.1;
+                "
+              >
+                <span lang="RU" style="font-size: 8pt; color: black; white-space: nowrap">{{
+                  formatMoney(savedTotalDeliveryCost())
+                }}</span>
+              </p>
+            </td>
+            <td
+              width="28"
+              style="
+                width: 21.25pt;
+                border-top: none;
+                border-left: none;
+                border-bottom: solid windowtext 1pt;
+                border-right: solid windowtext 1pt;
+                padding: 0 3pt;
+              "
+            >
+              <p
+                class="MsoNormal"
+                align="center"
+                style="
+                  text-align: center;
+                  text-autospace: ideograph-numeric ideograph-other;
+                  margin: 0;
+                  line-height: 1.1;
+                "
+              >
+                <span lang="RU" style="font-size: 8pt; color: black">12</span>
+              </p>
+            </td>
+            <td
+              width="85"
+              style="
+                width: 63.8pt;
+                border-top: none;
+                border-left: none;
+                border-bottom: solid windowtext 1pt;
+                border-right: solid windowtext 1pt;
+                padding: 0 3pt;
+              "
+            >
+              <p
+                class="MsoNormal"
+                align="center"
+                style="
+                  text-align: center;
+                  text-autospace: ideograph-numeric ideograph-other;
+                  margin: 0;
+                  line-height: 1.1;
+                "
+              >
+                <span lang="RU" style="font-size: 8pt; color: black; white-space: nowrap">{{
+                  formatMoney(savedTotalVatAmount())
+                }}</span>
+              </p>
+            </td>
+            <td
+              width="94"
+              style="
+                width: 70.85pt;
+                border-top: none;
+                border-left: none;
+                border-bottom: solid windowtext 1pt;
+                border-right: solid windowtext 1pt;
+                padding: 0 3pt;
+              "
+            >
+              <p
+                class="MsoNormal"
+                align="center"
+                style="
+                  text-align: center;
+                  text-autospace: ideograph-numeric ideograph-other;
+                  margin: 0;
+                  line-height: 1.1;
+                "
+              >
+                <span lang="RU" style="font-size: 8pt; color: black; white-space: nowrap">{{
+                  savedTotalWithVatFormatted()
+                }}</span>
+              </p>
+            </td>
+          </tr>
+          <tr style="page-break-inside: avoid">
+            <td
+              width="737"
+              colspan="9"
+              style="
+                width: 552.85pt;
+                border: solid windowtext 1pt;
+                border-top: none;
+                padding: 0 3pt;
+              "
+            >
+              <p
+                class="MsoNormal"
+                style="
+                  text-autospace: ideograph-numeric ideograph-other;
+                  margin: 0;
+                  line-height: 1.1;
+                "
+              >
+                <b
+                  ><span lang="RU" style="font-size: 8pt; color: black"
+                    >Итого:
+                    <span style="background: transparent">{{ savedTotalWithVatInWords() }} </span
+                    >сум с учетом НДС.</span
+                  ></b
+                >
+              </p>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p class="MsoPlainText" style="text-align: justify; text-indent: 35.4pt; line-height: 12pt">
+        <span lang="RU" style="font-family: 'Times New Roman', serif">&nbsp;</span>
+      </p>
+
+      <p class="MsoPlainText" style="text-align: justify; text-indent: 35.4pt; line-height: 12pt">
+        <span lang="RU" style="font-family: 'Times New Roman', serif"
+          >2. Согласно условиям Договора Покупатель проверил количество, и номинал подарочных
+          карт.</span
+        >
+      </p>
+
+      <p class="MsoPlainText" style="text-align: justify; text-indent: 35.4pt; line-height: 12pt">
+        <span lang="RU" style="font-family: 'Times New Roman', serif"
+          >3. По истечении 5 (пяти) календарных дней после подписания настоящего Акта претензии
+          Покупателя к количеству, номиналу, ассортименту подарочных карт не рассматриваются.</span
+        >
+      </p>
+
+      <p class="MsoPlainText" style="text-align: justify; text-indent: 35.4pt; line-height: 12pt">
+        <span lang="RU" style="font-family: 'Times New Roman', serif"
+          >4. Право собственности на подарочные карты, а также риск случайной гибели или повреждения
+          подарочных карт переходят от Продавца к Покупателю с даты подписания настоящего
+          Акта.</span
+        >
+      </p>
+
+      <p class="MsoPlainText" style="text-align: justify; text-indent: 35.4pt; line-height: 12pt">
+        <span lang="RU" style="font-family: 'Times New Roman', serif"
+          >5. Настоящий Акт составлен в 2 (двух) экземплярах, имеющих равную юридическую силу, по
+          одному для каждой из Сторон.</span
+        >
+      </p>
+
+      <p class="MsoPlainText" style="text-align: justify; text-indent: 35.4pt; line-height: 12pt">
+        <span lang="RU" style="font-family: 'Times New Roman', serif">&nbsp;</span>
+      </p>
+
+      <p
+        class="MsoPlainText"
+        align="center"
+        style="text-align: center; text-indent: 35.4pt; line-height: 12pt"
+      >
+        <b
+          ><span lang="RU" style="font-family: 'Times New Roman', serif"
+            >6. ПОДПИСИ СТОРОН:</span
+          ></b
+        >
+      </p>
+
+      <table
+        class="MsoTableGrid"
+        border="1"
+        cellspacing="0"
+        cellpadding="0"
+        style="border-collapse: collapse; border: none"
+      >
+        <tbody>
+          <tr style="height: 154.35pt">
+            <td
+              width="323"
+              valign="top"
+              style="
+                width: 242.15pt;
+                border: solid windowtext 1pt;
+                padding: 0 3pt;
+                height: 154.35pt;
+              "
+            >
+              <p class="MsoNormal" align="center" style="text-align: center; line-height: 12pt">
+                <b><span style="font-size: 10pt">«</span></b
+                ><b><span lang="RU" style="font-size: 10pt">Продавец</span></b
+                ><b><span style="font-size: 10pt">»: </span></b>
+              </p>
+              <p class="MsoNormal" align="center" style="text-align: center; line-height: 12pt">
+                <span lang="RU" style="font-size: 10pt">ИП</span
+                ><span lang="RU" style="font-size: 10pt"> </span
+                ><span lang="RU" style="font-size: 10pt">ООО</span
+                ><span style="font-size: 10pt"> «Anglesey Food» </span>
+              </p>
+              <p class="MsoNormal" align="center" style="text-align: center; line-height: 12pt">
+                <span style="font-size: 10pt">&nbsp;</span>
+              </p>
+              <p class="MsoNormal" style="text-align: justify; line-height: 12pt">
+                <span style="font-size: 10pt">&nbsp;</span>
+              </p>
+              <p class="MsoNormal" style="line-height: 12pt">
+                <span style="font-size: 10pt">&nbsp;</span>
+              </p>
+              <p class="MsoNormal" style="line-height: 12pt">
+                <span style="font-size: 10pt">&nbsp;</span>
+              </p>
+              <p class="MsoNormal" style="line-height: 12pt">
+                <span lang="RU" style="font-size: 10pt">____________________</span>
+              </p>
+              <p class="MsoNormal" style="line-height: 12pt">
+                <b><span lang="RU" style="font-size: 10pt">&nbsp;</span></b>
+              </p>
+              <p class="MsoNormal" style="line-height: 12pt">
+                <span lang="RU" style="font-size: 10pt">М.П.</span>
+              </p>
+              <p class="MsoNormal" align="center" style="text-align: center; line-height: 12pt">
+                <span lang="RU" style="font-size: 10pt">&nbsp;</span>
+              </p>
+            </td>
+            <td
+              width="317"
+              valign="top"
+              style="
+                width: 237.45pt;
+                border: solid windowtext 1pt;
+                border-left: none;
+                padding: 0 3pt;
+                height: 154.35pt;
+              "
+            >
+              <p class="MsoNormal" align="center" style="text-align: center; line-height: 12pt">
+                <b><span lang="RU" style="font-size: 10pt">«Покупатель»:</span></b>
+              </p>
+              <p class="MsoNormal" align="center" style="text-align: center; line-height: 12pt">
+                <span lang="RU" style="font-size: 10.5pt; background: transparent">{{
+                  savedCompanyName()
+                }}</span>
+              </p>
+              <p class="MsoNormal" style="line-height: 12pt">
+                <span lang="RU" style="font-size: 10pt">&nbsp;</span>
+              </p>
+              <p class="MsoNormal" style="line-height: 12pt">
+                <span lang="RU" style="font-size: 10pt">&nbsp;</span>
+              </p>
+              <p class="MsoNormal" style="line-height: 12pt">
+                <span lang="RU" style="font-size: 10pt">&nbsp;</span>
+              </p>
+              <p class="MsoNormal" style="line-height: 12pt">
+                <span lang="RU" style="font-size: 10pt">&nbsp;</span>
+              </p>
+              <p class="MsoNormal" style="line-height: 12pt">
+                <span lang="RU" style="font-size: 10pt">___________________________ </span>
+              </p>
+              <p class="MsoNormal" style="line-height: 12pt">
+                <b><span lang="RU" style="font-size: 10pt">&nbsp;</span></b>
+              </p>
+              <p class="MsoNormal" style="line-height: 12pt">
+                <span lang="RU" style="font-size: 10pt">М.П.</span>
+              </p>
+              <p class="MsoNormal" align="center" style="text-align: center; line-height: 12pt">
+                <span lang="RU" style="font-size: 10pt">&nbsp;</span>
+              </p>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p class="MsoNormal"><span lang="RU" style="font-size: 10pt">&nbsp;</span></p>
+    </div>
+  </div>
+</div>

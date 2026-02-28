@@ -1,0 +1,308 @@
+@if (showLoginModal() && !isAuthenticated()) {
+<div class="login-overlay">
+  <div class="login-modal">
+    <div class="login-header">
+      <h2>Доступ к Dashboard</h2>
+    </div>
+    <div class="login-body">
+      <p class="login-description">Введите пароль для доступа к панели управления</p>
+      <div class="login-form">
+        <input
+          type="password"
+          class="login-input"
+          [(ngModel)]="loginPassword"
+          (keyup.enter)="onLoginSubmit()"
+          placeholder="Введите пароль"
+          autofocus
+        />
+        @if (loginError()) {
+        <div class="login-error">{{ loginError() }}</div>
+        }
+        <button class="btn btn-login" (click)="onLoginSubmit()">Войти</button>
+      </div>
+    </div>
+  </div>
+</div>
+} @else {
+<div class="dashboard-container">
+  <div class="dashboard-header">
+    <h1>Dashboard</h1>
+    <div class="header-actions">
+      <button class="btn btn-logout" (click)="logout()" title="Выйти">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+          <polyline points="16 17 21 12 16 7"></polyline>
+          <line x1="21" y1="12" x2="9" y2="12"></line>
+        </svg>
+        Выйти
+      </button>
+      <button
+        class="btn btn-export"
+        (click)="exportToExcel()"
+        [disabled]="isLoading() || documents().length === 0"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+          <polyline points="7 10 12 15 17 10"></polyline>
+          <line x1="12" y1="15" x2="12" y2="3"></line>
+        </svg>
+        Export Excel
+      </button>
+      <button class="btn btn-refresh" (click)="loadDocuments()" [disabled]="isLoading()">
+        @if (isLoading()) {
+        <span class="spinner"></span>
+        } @else {
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"></path>
+          <path d="M21 3v5h-5"></path>
+          <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"></path>
+          <path d="M3 21v-5h5"></path>
+        </svg>
+        } Refresh
+      </button>
+    </div>
+  </div>
+
+  @if (error()) {
+  <div class="error-message">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="20"
+      height="20"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    >
+      <circle cx="12" cy="12" r="10"></circle>
+      <line x1="12" y1="8" x2="12" y2="12"></line>
+      <line x1="12" y1="16" x2="12.01" y2="16"></line>
+    </svg>
+    {{ error() }}
+  </div>
+  } @if (isLoading()) {
+  <div class="loading-container">
+    <div class="spinner-large"></div>
+    <p>Loading document details...</p>
+  </div>
+  } @else if (documents().length === 0) {
+  <div class="empty-state">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="64"
+      height="64"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="1.5"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    >
+      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+      <polyline points="14 2 14 8 20 8"></polyline>
+      <line x1="16" y1="13" x2="8" y2="13"></line>
+      <line x1="16" y1="17" x2="8" y2="17"></line>
+    </svg>
+    <h2>No documents found</h2>
+    <p>No document details have been sent yet.</p>
+  </div>
+  } @else {
+  <div class="search-container">
+    <div class="search-wrapper">
+      <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="11" cy="11" r="8"></circle>
+        <path d="m21 21-4.35-4.35"></path>
+      </svg>
+      <input
+        type="text"
+        class="search-input"
+        placeholder="Поиск по таблице (ИНН, название, номер договора, телефон и т.д.)"
+        [value]="searchTerm()"
+        (input)="onSearchChange($event)"
+      />
+      @if (searchTerm()) {
+      <button class="search-clear" (click)="clearSearch()" type="button" title="Очистить поиск">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+      }
+    </div>
+    @if (searchTerm()) {
+    <div class="search-results-info">
+      Найдено: {{ filteredDocuments().length }} из {{ documents().length }}
+    </div>
+    }
+  </div>
+  <div class="table-container">
+    <table class="documents-table">
+      <thead>
+        <tr>
+          <th>No</th>
+          <th>ИНН</th>
+          <th>НОМЕР КОНТРАГЕНТА</th>
+          <th>Наименование КОНТРАГЕНТА</th>
+          <th>НОМЕР И ДАТА ДОГОВОРА</th>
+          <th>СУММА ДОГОВОРA</th>
+          <th>Договор</th>
+          <th>НОМЕР ЗАКАЗА</th>
+          <th>НОМЕР ПОСТАВКИ</th>
+          <th>НОМЕР С/Ф</th>
+          <th>ТЕЛ НОМЕР КОНТРАГЕНТА</th>
+          <th>Примечания</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (doc of paginatedDocuments(); track doc.id; let i = $index) {
+        <tr (click)="openDetailModal(doc)" class="clickable-row" [style.background-color]="doc.rowBgColor || '#ffffff'">
+          <td>{{ startIndex() + i }}</td>
+          <td>{{ extractINN(doc.requisites) }}</td>
+          <td>{{ doc.contractorNumber || '-' }}</td>
+          <td>{{ doc.companyName }}</td>
+          <td>{{ doc.contractNumber }} от {{ formatDate(doc.date) }}</td>
+          <td>{{ formatNumber(doc.total) }}</td>
+          <td>{{ doc.contract || '-' }}</td>
+          <td>{{ doc.orderNumber || '-' }}</td>
+          <td>{{ doc.deliveryNumber || '-' }}</td>
+          <td>{{ doc.invoiceNumber || '-' }}</td>
+          <td>{{ doc.phoneNumber || extractPhone(doc.requisites) || '-' }}</td>
+          <td [style.background-color]="doc.notesBgColor || doc.rowBgColor || '#ffffff'">{{ doc.notes || '-' }}</td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  @if (documents().length > 0) {
+  <div class="pagination-container">
+    <div class="pagination-info">
+      <span>Показано {{ startIndex() }}-{{ endIndex() }} из {{ filteredDocuments().length }}</span>
+    </div>
+    <div class="pagination-controls-wrapper">
+      <div class="items-per-page-selector">
+        <label for="itemsPerPage">Показать:</label>
+        <select
+          id="itemsPerPage"
+          class="items-per-page-select"
+          [value]="itemsPerPage()"
+          (change)="onItemsPerPageChange($event)"
+        >
+          <option value="10">10</option>
+          <option value="25">25</option>
+          <option value="50">50</option>
+          <option value="100">100</option>
+        </select>
+        <span>записей</span>
+      </div>
+      <div class="pagination-controls">
+        <button
+          class="pagination-btn"
+          (click)="previousPage()"
+          [disabled]="currentPage() === 1"
+          title="Предыдущая страница"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <polyline points="15 18 9 12 15 6"></polyline>
+          </svg>
+        </button>
+
+        @for (page of getPageNumbers(); track page) { @if (page === -1) {
+        <span class="pagination-ellipsis">...</span>
+        } @else {
+        <button
+          class="pagination-btn pagination-page"
+          [class.active]="currentPage() === page"
+          (click)="goToPage(page)"
+        >
+          {{ page }}
+        </button>
+        } }
+
+        <button
+          class="pagination-btn"
+          (click)="nextPage()"
+          [disabled]="currentPage() === totalPages()"
+          title="Следующая страница"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+  } } @if (isViewModalOpen() && selectedDocument()) {
+  <app-details-view-modal
+    [document]="selectedDocument()!"
+    (close)="closeViewModal()"
+    (edit)="openEditModal()"
+    (delete)="openDeleteModal()"
+  ></app-details-view-modal>
+  } @if (isEditModalOpen() && selectedDocument()) {
+  <app-details-edit-modal
+    [document]="selectedDocument()!"
+    (close)="closeEditModal()"
+    (save)="saveDocument($event)"
+  ></app-details-edit-modal>
+  } @if (isDeleteModalOpen() && selectedDocument()) {
+  <app-details-delete-modal
+    [document]="selectedDocument()!"
+    (close)="closeDeleteModal()"
+    (confirm)="confirmDelete()"
+  ></app-details-delete-modal>
+  }
+</div>
+}
