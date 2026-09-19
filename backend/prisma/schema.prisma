@@ -1,0 +1,44 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Document {
+  id               String         @id
+  contractNumber   String         @map("contract_number")
+  date             String         @map("date")
+  companyName      String         @map("company_name")
+  position         String         @map("position")
+  fullName         String         @map("full_name")
+  documentBasis    String         @map("document_basis")
+  requisites       String         @map("requisites")
+  total            Float          @map("total")
+  contractorNumber String?        @map("contractor_number")
+  orderNumber      String?        @map("order_number")
+  deliveryNumber   String?        @map("delivery_number")
+  invoiceNumber    String?        @map("invoice_number")
+  phoneNumber      String?        @map("phone_number")
+  contract         String?        @map("contract")
+  notes            String?        @map("notes")
+  rowBgColor       String?        @default("#ffffff") @map("row_bg_color")
+  notesBgColor     String?        @default("#ffffff") @map("notes_bg_color")
+  createdAt        DateTime       @default(now()) @map("created_at")
+  updatedAt        DateTime       @updatedAt @map("updated_at")
+  items            DocumentItem[]
+
+  @@map("documents")
+}
+
+model DocumentItem {
+  id         Int      @id @default(autoincrement())
+  documentId String   @map("document_id")
+  document   Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  sum        Float    @map("sum")
+  count      Int      @map("count")
+
+  @@map("document_items")
+}
