@@ -5,5 +5,7 @@ const isLocalhost =
 
 export const environment = {
   production: true,
-  apiUrl: isLocalhost ? 'http://localhost:3000/api' : '/api',
+  apiUrl: isLocalhost
+    ? 'http://localhost:3000/api'
+    : 'https://vaucher-backend.onrender.com/api',
 };
