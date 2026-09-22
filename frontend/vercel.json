@@ -3,7 +3,7 @@
   "rewrites": [
     {
       "source": "/api/(.*)",
-      "destination": "https://vaucher-backend.onrender.com/api/$1"
+      "destination": "https://vaucher-app.fly.dev/api/$1"
     },
     {
       "source": "/(.*)",

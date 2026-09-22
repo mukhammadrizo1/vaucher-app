@@ -7,5 +7,5 @@ export const environment = {
   production: true,
   apiUrl: isLocalhost
     ? 'http://localhost:3000/api'
-    : 'https://vaucher-backend.onrender.com/api',
+    : 'https://vaucher-app.fly.dev/api',
 };

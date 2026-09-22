@@ -70,35 +70,23 @@ Ikkita alohida terminal oynasini oching:
 
 ---
 
-## 3-BOSQICH: Backendni Render.com ga Deploy Qilish
+## 3-BOSQICH: Backendni Fly.io ga Deploy Qilish
 
-1. Loyihangizni **GitHub** ga push qiling:
+1. Loyihangiz papkasida `fly.toml` va `Dockerfile` tayyorlangan.
+2. Fly.io CLI orqali secretlarni sozlang (agar hali kiritilmagan bo'lsa):
    ```bash
-   git add .
-   git commit -m "feat: nestjs backend with neon and angular frontend"
-   git push origin main
+   ~/.fly/bin/fly secrets set DATABASE_URL="postgresql://..." PORT="3000" NODE_ENV="production" -a vaucher-app
    ```
-2. [Render.com](https://render.com) ga kiring va GitHub profilingiz bilan bog'lang.
-3. **"New +"** -> **"Web Service"** tugmasini bosing.
-4. O'zingizning `vaucher-app` repozitoriyangizni tanlang (**Connect**).
-5. Quyidagi sozlamalarni kiriting:
-   - **Name**: `vaucher-backend` (yoki ixtiyoriy nom)
-   - **Region**: Frankfurt (yoki o'zingizga yaqini)
-   - **Root Directory**: `backend` *(MUHIM!)*
-   - **Environment**: `Node`
-   - **Branch**: `main`
-   - **Build Command**: `npm install && npm run build`
-   - **Start Command**: `npx prisma db push && npm run start:prod` *(Bu har safar deploy bo'lganda jadvallarni yangilab, serverni yoqadi)*
-   - **Instance Type**: `Free`
-6. Pastroqda **"Environment Variables"** bo'limiga o'ting va qo'shing:
-   - **Key**: `DATABASE_URL`
-   - **Value**: Neondagi connection stringingiz
-   - **Key**: `NODE_ENV`
-   - **Value**: `production`
-7. **"Create Web Service"** tugmasini bosing.
-8. Render loyihani build qiladi va sizga domen beradi:
-   Masalan: `https://vaucher-backend.onrender.com`
-9. **Tekshirish:** Brauzerda `https://vaucher-backend.onrender.com/api/documents` manzilini oching. Barcha hujjatlaringiz JSON formatida chiqishi kerak.
+3. Backendni Fly.io ga deploy qiling:
+   ```bash
+   ~/.fly/bin/fly deploy --ha=false
+   ```
+4. Holatni va loglarni tekshirish:
+   ```bash
+   ~/.fly/bin/fly status -a vaucher-app
+   ~/.fly/bin/fly logs -a vaucher-app
+   ```
+5. **Tekshirish:** Brauzerda yoki curl orqali `https://vaucher-app.fly.dev/api/health` yoki `https://vaucher-app.fly.dev/api/documents` manzilini oching. Barcha hujjatlar JSON formatida chiqadi.
 
 ---
 
@@ -107,14 +95,14 @@ Ikkita alohida terminal oynasini oching:
 Frontendni Vercel ga ulashdan oldin unga Renderni manzilini bildirish kerak.
 
 ### 1. Backend manzilini Vercel ga ulash (Tavsiya qilinadigan usul):
-`frontend/vercel.json` faylini oching va Render manzilingizni qo'ying:
+`frontend/vercel.json` faylini oching va Fly.io manzilingizni qo'ying:
 ```json
 {
   "version": 2,
   "rewrites": [
     {
       "source": "/api/(.*)",
-      "destination": "https://vaucher-backend.onrender.com/api/$1"
+      "destination": "https://vaucher-app.fly.dev/api/$1"
     },
     {
       "source": "/(.*)",
@@ -123,7 +111,7 @@ Frontendni Vercel ga ulashdan oldin unga Renderni manzilini bildirish kerak.
   ]
 }
 ```
-*(Bu orqali Vercel barcha `/api/*` so'rovlarini avtomatik Renderdagi backendga yo'naltiradi va hech qanday CORS muammosi yuzaga kelmaydi!)*
+*(Bu orqali Vercel barcha `/api/*` so'rovlarini avtomatik Fly.io dagi backendga yo'naltiradi va hech qanday CORS muammosi yuzaga kelmaydi!)*
 
 O'zgarishni git orqali push qiling:
 ```bash
