@@ -220,7 +220,7 @@ export class App implements AfterViewInit {
     // Deep copy table rows
     this.formTableRows.set(this.savedTableRows().map(row => ({ ...row })));
     this.nextRowId = Math.max(...this.savedTableRows().map(r => r.id), 0) + 1;
-    
+
     this.isModalOpen.set(true);
   }
 
@@ -253,9 +253,9 @@ export class App implements AfterViewInit {
     this.savedRequisites.set(this.formRequisites());
     // Deep copy table rows
     this.savedTableRows.set(this.formTableRows().map(row => ({ ...row })));
-    
+
     this.closeModal();
-    
+
     // Show success message
     this.showSuccessMessage.set(true);
     setTimeout(() => {
@@ -301,7 +301,7 @@ export class App implements AfterViewInit {
   updateRowSum(id: number, value: string) {
     const numValue = parseInt(value) || 0;
     const currentRows = this.formTableRows();
-    this.formTableRows.set(currentRows.map(row => 
+    this.formTableRows.set(currentRows.map(row =>
       row.id === id ? { ...row, sum: numValue } : row
     ));
   }
@@ -309,7 +309,7 @@ export class App implements AfterViewInit {
   updateRowCount(id: number, value: string) {
     const numValue = parseInt(value) || 0;
     const currentRows = this.formTableRows();
-    this.formTableRows.set(currentRows.map(row => 
+    this.formTableRows.set(currentRows.map(row =>
       row.id === id ? { ...row, count: numValue } : row
     ));
   }
@@ -428,30 +428,30 @@ export class App implements AfterViewInit {
     const month = (date.getMonth() + 1).toString().padStart(2, '0');
     const year = date.getFullYear();
     const dateStr = `${day}.${month}.${year}`;
-    
+
     return `Договор ${companyName} ${contractNumber} ${dateStr}.${extension}`;
   }
 
   async downloadPdf() {
     if (!this.isBrowser) return;
-    
+
     this.isGenerating.set(true);
     try {
       const html2pdf = (await import('html2pdf.js')).default;
       const element = this.documentContainer.nativeElement;
-      
+
       const opt = {
         margin: 0,
         filename: this.getDownloadFilename('pdf'),
         image: { type: 'jpeg' as const, quality: 0.98 },
-        html2canvas: { 
-          scale: 2, 
+        html2canvas: {
+          scale: 2,
           useCORS: true,
           letterRendering: true
         },
-        jsPDF: { 
-          unit: 'mm' as const, 
-          format: 'a4' as const, 
+        jsPDF: {
+          unit: 'mm' as const,
+          format: 'a4' as const,
           orientation: 'portrait' as const
         },
         pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
@@ -468,7 +468,7 @@ export class App implements AfterViewInit {
 
   async downloadDocx() {
     if (!this.isBrowser) return;
-    
+
     this.isGenerating.set(true);
     try {
       const doc = this.createDocxDocument();
@@ -498,7 +498,7 @@ export class App implements AfterViewInit {
 
   async confirmSendDetails() {
     if (!this.isBrowser) return;
-    
+
     this.isConfirmModalOpen.set(false);
     this.isGenerating.set(true);
     try {
@@ -512,7 +512,7 @@ export class App implements AfterViewInit {
           .map((doc: DocumentDetails) => doc.id)
           .filter((id?: string): id is string => !!id && /^\d+$/.test(id))
           .map((id: string) => parseInt(id, 10));
-        
+
         if (ids.length > 0) {
           const maxId = Math.max(...ids);
           nextIdNumber = maxId + 1;
@@ -560,12 +560,12 @@ export class App implements AfterViewInit {
   private createDocxDocument(): Document {
     const tableRows = this.savedTableRows();
     const date = this.formattedDate();
-    
+
     // Page width calculation: A4 = 8.27 inches, margins: left 0.8", right 0.4"
     // A4 width = 11909 twips, left margin = 1152 twips, right margin = 576 twips
     // Available width adjusted: 10609 twips, reduced by 3% to avoid overflow
     const PAGE_WIDTH = Math.round(10609 * 0.97); // ~10291 twips
-    
+
     // Border style
     const solidBorder = { style: BorderStyle.SINGLE, size: 8, color: '000000' };
     const noBorder = { style: BorderStyle.NIL, size: 0, color: 'FFFFFF' };
@@ -573,7 +573,7 @@ export class App implements AfterViewInit {
     const noBorders = { top: noBorder, bottom: noBorder, left: noBorder, right: noBorder };
 
     // Helper to create text run
-    const text = (content: string, bold = false, size = 20, italics = false) => 
+    const text = (content: string, bold = false, size = 20, italics = false) =>
       new TextRun({ text: content, bold, size, italics, font: 'Times New Roman' });
 
     // Helper to create paragraph
@@ -793,7 +793,7 @@ export class App implements AfterViewInit {
         children: [
           // Title
           para([text(`ДОГОВОР КУПЛИ-ПРОДАЖИ ПОДАРОЧНЫХ КАРТ № ${this.savedContractNumber()}`, true, 22)], AlignmentType.CENTER),
-          
+
           // City and Date
           createCityDateTable('г. Ташкент', `«${date.day}» ${date.month} ${date.year} г.`),
 
@@ -808,7 +808,7 @@ export class App implements AfterViewInit {
               text(this.savedFullName(), true),
               text(`, действующего на основании ${this.savedDocumentBasis()}, с одной стороны, и `),
               text('ИП ООО ANGLESEY FOOD', true),
-              text(', именуемый в дальнейшем «Продавец», в лице Руководителя отдела Korzinka-Biznes Шакирходжаев Ф., действующего на основании доверенности №045B от 04.11.2025г., с другой стороны, совместно именуемые Стороны, а по-отдельности «Сторона», заключили настоящий договор (далее – «Договор») о нижеследующем:'),
+              text(', именуемый в дальнейшем «Продавец», в лице Руководителя отдела Korzinka-Biznes Шакирходжаев Ф., действующего на основании доверенности № 050D от 04.11.2026г., с другой стороны, совместно именуемые Стороны, а по-отдельности «Сторона», заключили настоящий договор (далее – «Договор») о нижеследующем:'),
             ],
             alignment: AlignmentType.JUSTIFIED,
             spacing: { line: 276 },
@@ -822,7 +822,7 @@ export class App implements AfterViewInit {
           new Paragraph({ children: [text('C. Номинальная стоимость (номинал) подарочной карты ', false, 20, true), text('– сумма, указанная на Подарочной карте, на которую предъявитель вправе приобрести товар.')], alignment: AlignmentType.JUSTIFIED, spacing: { line: 276 }, indent: { left: 1276, hanging: 1276 } }),
           new Paragraph({ children: [text('D. Место приобретения Товара – ', false, 20, true), text('сеть супермаркетов Корзинка, расположенных на территории Республики Узбекистан, за исключением супермаркетов, расположенных по адресам: Республика Каракалпакстан, город Нукус, улица Ерназар Алакуз, дом 162 и Кашкадарьинская обла., г. Шахрисабз, улица Мафтункор, дом 35.')], alignment: AlignmentType.JUSTIFIED, spacing: { line: 276 }, indent: { left: 1276, hanging: 1276 } }),
           new Paragraph({ children: [text('E. Предъявитель – ', false, 20, true), text('физическое лицо, правомерно владеющее и распоряжающееся Подарочной картой в результате получения такой Подарочной карты от Покупателя, обладающее правом приобретения Товара в розницу для личного, семейного и иного использования, не связанного с предпринимательской деятельностью, в Месте приобретения Товара в обмен на списанные Продавцом средства с предъявленной Подарочной карты на сумму, установленную и не превышающую Номинала Подарочной карты.')], alignment: AlignmentType.JUSTIFIED, spacing: { line: 276 }, indent: { left: 1276, hanging: 1276 } }),
-          new Paragraph({ children: [text('F. Срок предъявления Подарочной карты – ', false, 20, true), text('период времени, установленный до 31.12.2026 года включительно, в течение которого Предъявитель имеет право на получение товара на сумму, эквивалентную сумме средств, указанных и имеющихся в Подарочной карте.')], alignment: AlignmentType.JUSTIFIED, spacing: { line: 276 }, indent: { left: 1276, hanging: 1276 } }),
+          new Paragraph({ children: [text('F. Срок предъявления Подарочной карты – ', false, 20, true), text('период времени, установленный до 31.12.2027 года включительно, в течение которого Предъявитель имеет право на получение товара на сумму, эквивалентную сумме средств, указанных и имеющихся в Подарочной карте.')], alignment: AlignmentType.JUSTIFIED, spacing: { line: 276 }, indent: { left: 1276, hanging: 1276 } }),
 
           // Section 2
           para([text('2. Предмет договора.', true, 22)], AlignmentType.CENTER),
@@ -923,7 +923,7 @@ export class App implements AfterViewInit {
               text(this.savedFullName(), true),
               text(`, действующего на основании ${this.savedDocumentBasis()}, с одной стороны, и `),
               text('ИП ООО ANGLESEY FOOD', true),
-              text(', именуемый в дальнейшем «Продавец», в лице Руководителя отдела Korzinka-Biznes Шакирходжаев Ф., действующего на основании доверенности №045B от 04.11.2025г., с другой стороны, совместно именуемые Стороны, а по-отдельности «Сторона», заключили настоящий Акт о нижеследующем:'),
+              text(', именуемый в дальнейшем «Продавец», в лице Руководителя отдела Korzinka-Biznes Шакирходжаев Ф., действующего на основании доверенности № 050D от 04.11.2026г., с другой стороны, совместно именуемые Стороны, а по-отдельности «Сторона», заключили настоящий Акт о нижеследующем:'),
             ],
             alignment: AlignmentType.JUSTIFIED,
             spacing: { line: 276 },

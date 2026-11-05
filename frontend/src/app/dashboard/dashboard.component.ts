@@ -221,9 +221,19 @@ export class DashboardComponent implements OnInit {
     
     try {
       const data = await this.documentApiService.getDocumentDetails();
-      // Reverse the array to show most recent documents first
       const documentsArray = Array.isArray(data) ? data : [];
-      this.documents.set([...documentsArray].reverse());
+      // Show most recent documents first (newest at top)
+      documentsArray.sort((a, b) => {
+        if (a.createdAt && b.createdAt) {
+          const diff = new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+          if (diff !== 0) return diff;
+        }
+        if (a.id && b.id) {
+          return b.id.localeCompare(a.id, undefined, { numeric: true });
+        }
+        return 0;
+      });
+      this.documents.set(documentsArray);
       // Reset to first page when loading new documents
       this.currentPage.set(1);
     } catch (error) {
@@ -391,18 +401,11 @@ export class DashboardComponent implements OnInit {
 
       // Define columns
       worksheet.columns = [
-        { header: '№', key: 'number', width: 5 },
-        { header: 'ИНН', key: 'inn', width: 12 },
-        { header: 'НОМЕР КОНТРАГЕНТА', key: 'contractorNumber', width: 18 },
-        { header: 'Наименование КОНТРАГЕНТА', key: 'companyName', width: 30 },
-        { header: 'НОМЕР И ДАТА ДОГОВОРА', key: 'contractDate', width: 25 },
-        { header: 'СУММА ДОГОВОРA', key: 'total', width: 18 },
-        { header: 'Договор', key: 'contract', width: 15 },
-        { header: 'НОМЕР ЗАКАЗА', key: 'orderNumber', width: 15 },
-        { header: 'НОМЕР ПОСТАВКИ', key: 'deliveryNumber', width: 15 },
-        { header: 'НОМЕР С/Ф', key: 'invoiceNumber', width: 12 },
-        { header: 'ТЕЛ НОМЕР КОНТРАГЕНТА', key: 'phoneNumber', width: 20 },
-        { header: 'Примечания', key: 'notes', width: 25 }
+        { header: '№', key: 'number', width: 6 },
+        { header: 'ИНН', key: 'inn', width: 16 },
+        { header: 'Наименование КОНТРАГЕНТА', key: 'companyName', width: 38 },
+        { header: 'НОМЕР И ДАТА ДОГОВОРА', key: 'contractDate', width: 26 },
+        { header: 'СУММА ДОГОВОРA', key: 'total', width: 20 }
       ];
 
       // Style header row
@@ -429,47 +432,25 @@ export class DashboardComponent implements OnInit {
         const row = worksheet.addRow({
           number: index + 1,
           inn: this.extractINN(doc.requisites),
-          contractorNumber: doc.contractorNumber || '-',
           companyName: doc.companyName,
           contractDate: `${doc.contractNumber} от ${this.formatDate(doc.date)}`,
-          total: doc.total,
-          contract: doc.contract || '-',
-          orderNumber: doc.orderNumber || '-',
-          deliveryNumber: doc.deliveryNumber || '-',
-          invoiceNumber: doc.invoiceNumber || '-',
-          phoneNumber: doc.phoneNumber || this.extractPhone(doc.requisites) || '-',
-          notes: doc.notes || '-'
+          total: doc.total
         });
 
-        // Get row and notes background colors
+        // Get row background color
         const rowBgColor = doc.rowBgColor || '#ffffff';
-        const notesBgColor = doc.notesBgColor || rowBgColor;
         const rowARGB = hexToARGB(rowBgColor);
-        const notesARGB = hexToARGB(notesBgColor);
 
         // Apply row background color to all cells
-        row.eachCell((cell: any, colNumber: number) => {
-          // Column 12 is Примечания (notes)
-          if (colNumber === 12) {
-            // Apply notes background color to Примечания column
-            if (notesBgColor !== '#ffffff') {
-              cell.fill = {
-                type: 'pattern',
-                pattern: 'solid',
-                fgColor: { argb: notesARGB }
-              };
-            }
-          } else {
-            // Apply row background color to other columns
-            if (rowBgColor !== '#ffffff') {
-              cell.fill = {
-                type: 'pattern',
-                pattern: 'solid',
-                fgColor: { argb: rowARGB }
-              };
-            }
-          }
-        });
+        if (rowBgColor !== '#ffffff') {
+          row.eachCell((cell: any) => {
+            cell.fill = {
+              type: 'pattern',
+              pattern: 'solid',
+              fgColor: { argb: rowARGB }
+            };
+          });
+        }
       });
 
       // Generate Excel file buffer

@@ -53,9 +53,10 @@ export class DocumentsService {
           orderBy: { id: 'asc' },
         },
       },
-      orderBy: {
-        createdAt: 'desc',
-      },
+      orderBy: [
+        { createdAt: 'desc' },
+        { id: 'desc' },
+      ],
     });
 
     return documents.map((doc) => this.formatDocument(doc));

@@ -173,16 +173,9 @@
         <tr>
           <th>No</th>
           <th>ИНН</th>
-          <th>НОМЕР КОНТРАГЕНТА</th>
           <th>Наименование КОНТРАГЕНТА</th>
           <th>НОМЕР И ДАТА ДОГОВОРА</th>
           <th>СУММА ДОГОВОРA</th>
-          <th>Договор</th>
-          <th>НОМЕР ЗАКАЗА</th>
-          <th>НОМЕР ПОСТАВКИ</th>
-          <th>НОМЕР С/Ф</th>
-          <th>ТЕЛ НОМЕР КОНТРАГЕНТА</th>
-          <th>Примечания</th>
         </tr>
       </thead>
       <tbody>
@@ -190,16 +183,9 @@
         <tr (click)="openDetailModal(doc)" class="clickable-row" [style.background-color]="doc.rowBgColor || '#ffffff'">
           <td>{{ startIndex() + i }}</td>
           <td>{{ extractINN(doc.requisites) }}</td>
-          <td>{{ doc.contractorNumber || '-' }}</td>
           <td>{{ doc.companyName }}</td>
           <td>{{ doc.contractNumber }} от {{ formatDate(doc.date) }}</td>
           <td>{{ formatNumber(doc.total) }}</td>
-          <td>{{ doc.contract || '-' }}</td>
-          <td>{{ doc.orderNumber || '-' }}</td>
-          <td>{{ doc.deliveryNumber || '-' }}</td>
-          <td>{{ doc.invoiceNumber || '-' }}</td>
-          <td>{{ doc.phoneNumber || extractPhone(doc.requisites) || '-' }}</td>
-          <td [style.background-color]="doc.notesBgColor || doc.rowBgColor || '#ffffff'">{{ doc.notes || '-' }}</td>
         </tr>
         }
       </tbody>
