@@ -60,6 +60,8 @@ export interface DocumentDetails {
   notes?: string;              // Примечания
   rowBgColor?: string;         // Цвет фона строк таблицы
   notesBgColor?: string;       // Цвет фона поля Примечания
+  createdAt?: string;          // Дата создания
+  updatedAt?: string;          // Дата обновления
 }
 
 @Component({
